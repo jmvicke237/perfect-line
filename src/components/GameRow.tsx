@@ -1,24 +1,23 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Row, Item } from '../types/game';
+import { Item } from '../types/game';
 
 interface GameRowProps {
-  row: Row;
+  rowId: string;
+  prompt: string;
   items: Item[];
   isSubmitted: boolean;
-  results?: boolean[];
-  rowIndex?: number;
+  correctPositions?: boolean[];
 }
 
-// NYT Connections colors
-const categoryColors = [
-  { bg: 'bg-yellow-200', border: 'border-yellow-400', text: 'text-yellow-900' }, // Yellow (easiest)
-  { bg: 'bg-green-200', border: 'border-green-400', text: 'text-green-900' },    // Green 
-  { bg: 'bg-blue-200', border: 'border-blue-400', text: 'text-blue-900' },       // Blue
-  { bg: 'bg-purple-200', border: 'border-purple-400', text: 'text-purple-900' }  // Purple (hardest)
-];
+interface SortableItemProps {
+  id: string;
+  name: string;
+  isCorrect?: boolean;
+  isWrong?: boolean;
+}
 
-const SortableItem = ({ id, name, isCorrect, categoryIndex }: { id: string; name: string; isCorrect?: boolean; categoryIndex?: number }) => {
+export function SortableItem({ id, name, isCorrect, isWrong }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -34,50 +33,47 @@ const SortableItem = ({ id, name, isCorrect, categoryIndex }: { id: string; name
     zIndex: isDragging ? 100 : 1,
   };
 
-  let colorClasses = 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50';
+  // Determine color based on whether it's correct or not
+  let className = "bg-slate-700 hover:bg-slate-600 p-2 md:p-3 rounded text-white text-sm md:text-base shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
   
-  if (isCorrect !== undefined && categoryIndex !== undefined) {
-    const category = categoryColors[categoryIndex];
-    colorClasses = `${category.bg} ${category.border} ${category.text}`;
+  if (isCorrect) {
+    className = "bg-green-600 hover:bg-green-500 p-2 md:p-3 rounded text-white text-sm md:text-base shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
+  } else if (isWrong) {
+    className = "bg-red-600 hover:bg-red-500 p-2 md:p-3 rounded text-white text-sm md:text-base shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
+  }
+
+  if (isDragging) {
+    className += " opacity-80 scale-105";
   }
 
   return (
     <div
       ref={setNodeRef}
       style={style}
+      className={className}
       {...attributes}
       {...listeners}
-      className={`
-        aspect-square flex items-center justify-center
-        text-center font-medium text-sm sm:text-base p-1
-        border rounded-md shadow-sm
-        transition-all duration-200
-        ${isDragging ? 'opacity-80 scale-105 ring-2 ring-blue-400 cursor-grabbing' : 'cursor-grab'}
-        ${colorClasses}
-      `}
     >
       {name}
     </div>
   );
-};
+}
 
-export const GameRow = ({ row, items, isSubmitted, results, rowIndex = 0 }: GameRowProps) => {
+export default function GameRow({ rowId: _, prompt, items, isSubmitted, correctPositions }: GameRowProps) {
   return (
-    <div className="mb-6 w-full">
-      {!isSubmitted && (
-        <div className="text-base font-medium mb-3 text-gray-200 text-center">{row.prompt}</div>
-      )}
-      <div className="grid grid-cols-4 gap-2 sm:gap-3">
+    <div className="mb-4 md:mb-6 p-3 md:p-4 bg-slate-800/50 rounded-lg shadow-md">
+      <div className="text-xs md:text-sm mb-2 md:mb-3 text-center font-medium">{prompt}</div>
+      <div className="grid grid-cols-4 gap-2 md:gap-3">
         {items.map((item, index) => (
           <SortableItem
             key={item.id}
             id={item.id}
             name={item.name}
-            isCorrect={isSubmitted ? results?.[index] : undefined}
-            categoryIndex={isSubmitted && results?.every(r => r) ? rowIndex : undefined}
+            isCorrect={isSubmitted && correctPositions?.[index]}
+            isWrong={isSubmitted && correctPositions && !correctPositions[index]}
           />
         ))}
       </div>
     </div>
   );
-}; 
+} 

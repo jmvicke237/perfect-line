@@ -1,7 +1,7 @@
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { useState } from 'react';
-import { GameRow } from './GameRow';
+import GameRow from './GameRow';
 import { GameState, Puzzle } from '../types/game';
 
 interface GameProps {
@@ -127,14 +127,14 @@ export const Game = ({ puzzle }: GameProps) => {
       
       <div className="w-full mb-6">
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          {gameState.currentPuzzle?.rows.map((row, rowIndex) => (
+          {gameState.currentPuzzle?.rows.map((row) => (
             <SortableContext key={row.id} items={row.items.map(item => item.id)}>
               <GameRow
-                row={row}
+                rowId={row.id}
+                prompt={row.prompt}
                 items={row.items}
                 isSubmitted={gameState.isSubmitted}
-                results={gameState.results[row.id]}
-                rowIndex={rowIndex}
+                correctPositions={gameState.results[row.id]}
               />
             </SortableContext>
           ))}

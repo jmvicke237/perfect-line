@@ -1,79 +1,9 @@
 import { useState, useEffect } from 'react';
-import { DndContext, closestCenter, DragEndEvent, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
-import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { DndContext, closestCenter, DragEndEvent, useSensors, useSensor, PointerSensor, TouchSensor } from '@dnd-kit/core';
+import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { getDailyPuzzle, getDailyPuzzleForDate } from './data/gameDataUtils';
 import { Puzzle, Item } from './types/game';
-
-// Sortable Item Component
-const SortableItem = ({ id, name, isCorrect, isWrong }: { 
-  id: string; 
-  name: string; 
-  category?: string;
-  isCorrect?: boolean;
-  isWrong?: boolean;
-}) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    zIndex: isDragging ? 100 : 1,
-  };
-
-  // Determine color based on whether it's correct or not
-  let backgroundColor = '#2a2a34'; // default dark gray
-  let textColor = '#fff';
-  let borderColor = 'transparent';
-  
-  if (isCorrect) {
-    backgroundColor = '#4ade80'; // green for correct
-    textColor = '#fff';
-    borderColor = '#2e8555';
-  } else if (isWrong) {
-    backgroundColor = '#f87171'; // red for wrong
-    textColor = '#fff';
-    borderColor = '#b91c1c';
-  } else if (isDragging) {
-    backgroundColor = '#4b4b58'; // slightly lighter when dragging
-  }
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={{
-        ...style,
-        aspectRatio: '1/1',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontWeight: 'bold',
-        fontSize: '12px',
-        borderRadius: '4px',
-        cursor: isDragging ? 'grabbing' : 'grab',
-        backgroundColor,
-        color: textColor,
-        border: `2px solid ${borderColor}`,
-        transition: transition || 'all 0.2s ease',
-        userSelect: 'none',
-        boxShadow: isDragging ? '0 5px 10px rgba(0,0,0,0.3)' : 'none',
-        padding: '4px',
-        textAlign: 'center',
-      }}
-      {...attributes}
-      {...listeners}
-    >
-      {name}
-    </div>
-  );
-};
+import GameRow from './components/GameRow';
 
 function App() {
   // State for puzzle date
@@ -93,8 +23,14 @@ function App() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8, // Start dragging after moving 8px
-      },
+        distance: 5, // Reduce the activation distance for mobile
+      }
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 100, // Small delay for better touch handling
+        tolerance: 5, // Tolerance for small movements
+      }
     })
   );
 
@@ -218,23 +154,6 @@ function App() {
     loadDailyPuzzle();
   };
 
-  const goToToday = () => {
-    setPuzzleDate(new Date().toISOString().split('T')[0]);
-  };
-
-  // Get information about whether an item is correct or wrong based on its position
-  const getItemPositionInfo = (index: number, rowId: string): { isCorrect: boolean; isWrong: boolean } => {
-    if (!isSubmitted) {
-      return { isCorrect: false, isWrong: false };
-    }
-    
-    const isCorrect = correctPositions[rowId]?.[index] ?? false;
-    return { 
-      isCorrect, 
-      isWrong: isSubmitted && !isCorrect 
-    };
-  };
-
   // Generate a shareable result with emoji squares
   const generateShareableResult = () => {
     if (!isSubmitted || !puzzle) return '';
@@ -296,183 +215,87 @@ function App() {
       });
   };
 
-  if (!puzzle) return <div>Loading...</div>;
-
   return (
-    <div style={{
-      backgroundColor: '#121213', 
-      minHeight: '100vh',
-      padding: '20px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontFamily: 'sans-serif'
-    }}>
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '20px'
-      }}>
-        <div style={{
-          fontSize: '24px',
-          fontWeight: 'bold',
-          marginBottom: '5px'
-        }}>
-          PERFECT LINE
+    <div className="min-h-screen w-full bg-gradient-to-b from-indigo-800 to-indigo-950 text-white p-2 md:p-4 flex flex-col items-center">
+      <header className="w-full max-w-lg mb-4 flex flex-col items-center">
+        <h1 className="text-xl md:text-2xl font-bold text-center mb-2">Perfect Line</h1>
+        <div className="mb-2 md:mb-4 flex flex-wrap justify-center gap-2">
+          <input 
+            type="date" 
+            value={puzzleDate} 
+            onChange={handleDateChange}
+            className="bg-indigo-700 text-white p-1 md:p-2 rounded text-sm md:text-base"
+          />
+          <button 
+            onClick={() => setPuzzleDate(new Date().toISOString().split('T')[0])}
+            className="bg-indigo-600 hover:bg-indigo-500 p-1 md:p-2 rounded text-sm md:text-base"
+          >
+            Today
+          </button>
         </div>
-        <div style={{
-          fontSize: '18px',
-          fontWeight: 'bold',
-          color: '#4a95f9',
-          marginBottom: '5px'
-        }}>
-          {puzzleTitle}
+        <div className="text-center mb-2 md:mb-4">
+          <h2 className="text-lg md:text-xl font-semibold">{puzzleTitle}</h2>
+          <p className="text-xs md:text-sm opacity-80">{puzzleDescription}</p>
         </div>
-        <div style={{
-          fontSize: '14px',
-          color: '#aaa',
-          marginBottom: '10px'
-        }}>
-          {puzzleDescription || 'Arrange items in order from lowest to highest value'}
-        </div>
-        
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '15px',
-          marginBottom: '20px'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <label htmlFor="date-picker" style={{ fontSize: '14px' }}>Date:</label>
-            <input 
-              id="date-picker"
-              type="date" 
-              value={puzzleDate}
-              onChange={handleDateChange}
-              style={{
-                backgroundColor: '#2a2a34',
-                color: 'white',
-                border: '1px solid #4a4a4a',
-                padding: '6px',
-                borderRadius: '4px'
-              }}
-            />
-            <button
-              onClick={goToToday}
-              style={{
-                backgroundColor: '#2a2a34',
-                color: 'white',
-                border: '1px solid #4a4a4a',
-                padding: '6px 10px',
-                borderRadius: '4px',
-                fontSize: '13px',
-                cursor: 'pointer'
-              }}
+      </header>
+
+      {puzzle && (
+        <div className="w-full max-w-lg">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            {puzzle.rows.map((row) => (
+              <SortableContext key={row.id} items={itemsByRow[row.id]?.map(item => item.id) || []}>
+                <GameRow 
+                  rowId={row.id}
+                  prompt={row.prompt}
+                  items={itemsByRow[row.id] || []}
+                  isSubmitted={isSubmitted}
+                  correctPositions={correctPositions[row.id]}
+                />
+              </SortableContext>
+            ))}
+          </DndContext>
+
+          <div className="mt-4 flex justify-center gap-2 md:gap-3 flex-wrap">
+            <button 
+              onClick={handleSubmit}
+              disabled={isSubmitted && gameComplete}
+              className={`px-3 py-1 md:px-4 md:py-2 rounded font-medium text-sm md:text-base ${
+                isSubmitted && gameComplete 
+                  ? 'bg-green-700 text-white' 
+                  : 'bg-blue-600 hover:bg-blue-500 text-white'
+              }`}
             >
-              Today
+              {isSubmitted ? (gameComplete ? '🎉 Perfect!' : 'Try Again') : 'Submit'}
             </button>
-          </div>
-        </div>
-      </div>
-
-      <DndContext 
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <div style={{
-          width: '100%',
-          maxWidth: '580px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px'
-        }}>
-          {puzzle.rows.map((row) => {
-            const rowItems = itemsByRow[row.id] || [];
             
-            return (
-              <div key={row.id} style={{
-                padding: '10px',
-                borderRadius: '4px',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
-              }}>
-                <div style={{
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  marginBottom: '4px',
-                }}>
-                  {row.prompt}
-                </div>
-                <SortableContext items={rowItems.map(item => item.id)}>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(5, 1fr)',
-                    gap: '10px'
-                  }}>
-                    {rowItems.map((item, index) => {
-                      const { isCorrect, isWrong } = getItemPositionInfo(index, row.id);
-                      
-                      return (
-                        <SortableItem 
-                          key={item.id} 
-                          id={item.id} 
-                          name={item.name} 
-                          isCorrect={isCorrect}
-                          isWrong={isWrong}
-                        />
-                      );
-                    })}
-                  </div>
-                </SortableContext>
-              </div>
-            );
-          })}
-        </div>
-      </DndContext>
-
-      <div className="mt-4 flex justify-center gap-3">
-        <button 
-          onClick={handleSubmit}
-          disabled={isSubmitted && gameComplete}
-          className={`px-4 py-2 rounded font-medium ${
-            isSubmitted && gameComplete 
-              ? 'bg-green-700 text-white' 
-              : 'bg-blue-600 hover:bg-blue-500 text-white'
-          }`}
-        >
-          {isSubmitted ? (gameComplete ? '🎉 Perfect!' : 'Try Again') : 'Submit'}
-        </button>
-        
-        {isSubmitted && (
-          <button 
-            onClick={resetGame}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium text-white"
-          >
-            Reset
-          </button>
-        )}
-        
-        {isSubmitted && (
-          <button 
-            onClick={handleShare}
-            className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded font-medium text-white"
-          >
-            Share
-          </button>
-        )}
-      </div>
-      
-      {isSubmitted && (
-        <div className="mt-4 text-center">
-          <p>Score: {score[0]}/{score[1]}</p>
+            {isSubmitted && (
+              <button 
+                onClick={resetGame}
+                className="px-3 py-1 md:px-4 md:py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium text-white text-sm md:text-base"
+              >
+                Reset
+              </button>
+            )}
+            
+            {isSubmitted && (
+              <button 
+                onClick={handleShare}
+                className="px-3 py-1 md:px-4 md:py-2 bg-green-600 hover:bg-green-500 rounded font-medium text-white text-sm md:text-base"
+              >
+                Share
+              </button>
+            )}
+          </div>
+          
+          {isSubmitted && (
+            <div className="mt-4 text-center">
+              <p className="text-sm md:text-base">Score: {score[0]}/{score[1]}</p>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -6,15 +6,34 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #213547;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 body {
   margin: 0;
-  padding: 0;
+  display: flex;
+  place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f3f4f6;
+  overscroll-behavior: none;
+}
+
+/* Disable pull-to-refresh on mobile */
+html, body {
+  overscroll-behavior-y: contain;
 }
 
 a {
@@ -41,6 +60,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  touch-action: manipulation;
 }
 button:hover {
   border-color: #646cff;
@@ -74,16 +94,24 @@ button:focus-visible {
 
 /* Animations */
 .fade-in {
-  animation: fadeIn 0.5s ease-in;
+  animation: fadeIn 0.3s ease-in;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
+}
+
+/* Custom */
+.dragging-item {
+  opacity: 0.6;
+  touch-action: none;
+}
+
+.sortable-item:active {
+  cursor: grabbing;
 }
