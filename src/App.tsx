@@ -6,10 +6,10 @@ import { getDailyPuzzle, getDailyPuzzleForDate } from './data/gameDataUtils';
 import { Puzzle, Item } from './types/game';
 
 // Sortable Item Component
-const SortableItem = ({ id, name, category, isCorrect, isWrong }: { 
+const SortableItem = ({ id, name, isCorrect, isWrong }: { 
   id: string; 
   name: string; 
-  category?: string; 
+  category?: string;
   isCorrect?: boolean;
   isWrong?: boolean;
 }) => {
@@ -222,22 +222,16 @@ function App() {
     setPuzzleDate(new Date().toISOString().split('T')[0]);
   };
 
-  // Get correct position info for an item
-  const getItemPositionInfo = (item: Item, index: number, rowId: string): { isCorrect: boolean; isWrong: boolean } => {
+  // Get information about whether an item is correct or wrong based on its position
+  const getItemPositionInfo = (index: number, rowId: string): { isCorrect: boolean; isWrong: boolean } => {
     if (!isSubmitted) {
       return { isCorrect: false, isWrong: false };
     }
     
-    const positionResults = correctPositions[rowId];
-    if (!positionResults) {
-      return { isCorrect: false, isWrong: false };
-    }
-    
-    const isCorrect = positionResults[index];
-    
-    return {
-      isCorrect,
-      isWrong: !isCorrect
+    const isCorrect = correctPositions[rowId]?.[index] ?? false;
+    return { 
+      isCorrect, 
+      isWrong: isSubmitted && !isCorrect 
     };
   };
 
@@ -257,7 +251,7 @@ function App() {
     let shareText = `Perfect Line - ${formattedDate}\n\n`;
     
     // Add emoji grid for each row
-    puzzle.rows.forEach((row, rowIndex) => {
+    puzzle.rows.forEach(row => {
       const rowResults = correctPositions[row.id] || [];
       rowResults.forEach(isCorrect => {
         shareText += isCorrect ? '🟩' : '🟥';
@@ -424,7 +418,7 @@ function App() {
                     gap: '10px'
                   }}>
                     {rowItems.map((item, index) => {
-                      const { isCorrect, isWrong } = getItemPositionInfo(item, index, row.id);
+                      const { isCorrect, isWrong } = getItemPositionInfo(index, row.id);
                       
                       return (
                         <SortableItem 

@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
+import { useState } from 'react';
 import { GameRow } from './GameRow';
-import { GameState, Puzzle, Row } from '../types/game';
+import { GameState, Puzzle } from '../types/game';
 
 interface GameProps {
   puzzle: Puzzle;
@@ -117,14 +117,6 @@ export const Game = ({ puzzle }: GameProps) => {
   };
 
   const [correct, total] = calculateScore();
-
-  // NYT Connections-style colors for categories
-  const categoryColors = [
-    'yellow', // Yellow category
-    'green',  // Green category
-    'blue',   // Blue category
-    'purple'  // Purple category
-  ];
 
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 w-full flex flex-col items-center">
