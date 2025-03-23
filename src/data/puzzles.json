@@ -1,0 +1,153 @@
+{
+  "puzzles": [
+    {
+      "id": "2025-03-23",
+      "name": "March 23, 2025",
+      "description": "All about Countries",
+      "rows": [
+        {
+          "id": "countries-population",
+          "attribute": "population",
+          "color": "#4a95f9",
+          "prompt": "Sort by population of country (smallest to largest in millions)",
+          "items": [
+            { "name": "Peru", "value": 33 },
+            { "name": "Australia", "value": 26 },
+            { "name": "Kazakhstan", "value": 19 },
+            { "name": "Nigeria", "value": 217 },
+            { "name": "France", "value": 68 }
+          ]
+        },
+        {
+          "id": "winter-gold",
+          "attribute": "medals by country",
+          "color": "#4abbe3",
+          "prompt": "Sort by number of medals won (lowest to highest)",
+          "items": [
+            { "name": "Germany", "value": 100 },
+            { "name": "Switzerland", "value": 56 },
+            { "name": "United States", "value": 105 },
+            { "name": "Norway", "value": 132 },
+            { "name": "Canada", "value": 73 }
+          ]
+        },
+        {
+          "id": "cheese-export",
+          "attribute": "value in 2021",
+          "color": "#f9da4a",
+          "prompt": "Sort total value of cheese exports in 2021 (lowest to highest in billions of dollars)",
+          "items": [
+            { "name": "France", "value": 3.8 },
+            { "name": "Germany", "value": 5.4 },
+            { "name": "New Zealand", "value": 2.4 },
+            { "name": "United States", "value": 1.9 },
+            { "name": "Italy", "value": 4.3 }
+          ]
+        },
+        {
+          "id": "stars-flag",
+          "attribute": "number",
+          "color": "#e34a77",
+          "prompt": "Sort by number of stars on the flag (least to most)",
+          "items": [
+            { "name": "New Zealand", "value": 4 },
+            { "name": "Singapore", "value": 5 },
+            { "name": "Syria", "value": 2 },
+            { "name": "Vietnam", "value": 1 },
+            { "name": "Venezuela", "value": 8 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2025-03-24",
+      "name": "March 24, 2025",
+      "description": "All about animals",
+      "rows": [
+        {
+          "id": "seacreature-speed",
+          "attribute": "Speed in miles per hour",
+          "color": "#e3774a",
+          "prompt": "Sort by top speed (slowest to fastest)",
+          "items": [
+            { "name": "Pilot Whale", "value": 47 },
+            { "name": "Killer Whale", "value": 34 },
+            { "name": "Swordfish", "value": 60 },
+            { "name": "Sailfish", "value": 68 },
+            { "name": "Yellowfin Tuna", "value": 50 }
+          ]
+        },
+        {
+          "id": "bird-wingspan",
+          "attribute": "inches",
+          "color": "#f9da4a",
+          "prompt": "Sort by wingspan (shortest to longest in inches)",
+          "items": [
+            { "name": "Herring Gull", "value": 57.5 },
+            { "name": "Mourning Dove", "value": 17.7 },
+            { "name": "Rock Pigeon", "value": 26.4 },
+            { "name": "Bald Eagle", "value": 80.3 },
+            { "name": "Snowy Owl", "value": 57.1 }
+          ]
+        },
+        {
+          "id": "snake-length",
+          "attribute": "feet",
+          "color": "#9d4ae3",
+          "prompt": "Sort max length (shortest to longest in feet)",
+          "items": [
+            { "name": "Green Anaconda", "value": 29 },
+            { "name": "Boa Constrictor", "value": 13 },
+            { "name": "Black Mamba", "value": 14 },
+            { "name": "Rattlesnake", "value": 8 },
+            { "name": "King Brown Snake", "value": 9.8 }
+          ]
+        },
+        {
+          "id": "heart-rate",
+          "attribute": "bpm",
+          "color": "#78c47d",
+          "prompt": "Resting heart rate (shortest to fastest)",
+          "items": [
+            { "name": "Adult Human", "value": 60 },
+            { "name": "Blue Whale", "value": 2 },
+            { "name": "Mouse", "value": 450 },
+            { "name": "Chicken", "value": 250 },
+            { "name": "Horse", "value": 28 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "custom-april-6",
+      "name": "Natural World",
+      "description": "Explore the wonders of nature",
+      "rows": [
+        {
+          "id": "nature-height",
+          "categoryId": "height",
+          "prompt": "Sort by height (shortest to tallest)",
+          "items": ["ANT", "COFFEE MUG", "ADULT", "GIRAFFE", "MOUNT EVEREST"]
+        },
+        {
+          "id": "nature-temp",
+          "categoryId": "temperature",
+          "prompt": "Sort by temperature (coldest to hottest)",
+          "items": ["ANTARCTICA", "FREEZING POINT", "ROOM TEMPERATURE", "BODY TEMPERATURE", "LAVA"]
+        },
+        {
+          "id": "nature-speed",
+          "categoryId": "speed",
+          "prompt": "Sort by speed (slowest to fastest)",
+          "items": ["SNAIL", "WALKING", "RUNNING", "CHEETAH", "COMMERCIAL JET"]
+        },
+        {
+          "id": "nature-age",
+          "categoryId": "age",
+          "prompt": "Sort by age (newest to oldest)",
+          "items": ["SMARTPHONE", "AUTOMOBILE", "BOOK", "WHEEL", "FIRE"]
+        }
+      ]
+    }
+  ]
+} 

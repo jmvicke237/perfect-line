@@ -1,0 +1,16 @@
+{
+  "dailyPuzzles": [
+    {
+      "date": "2025-03-23",
+      "puzzleId": "2025-03-23",
+      "name": "March 23, 2025 Puzzle",
+      "description": "Test your knowledge of nations"
+    },
+    {
+      "date": "2025-03-24",
+      "puzzleId": "2025-03-24",
+      "name": "April 2nd Puzzle",
+      "description": "Explore scientific measurements"
+    }
+  ]
+} 
