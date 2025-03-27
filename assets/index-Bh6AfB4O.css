@@ -1,0 +1,1 @@
+@tailwind base;@tailwind components;@tailwind utilities;body{margin:0;font-family:Inter,system-ui,Avenir,Helvetica,Arial,sans-serif}html,body{overscroll-behavior-y:contain}.dragging-item{opacity:.6;touch-action:none}.sortable-item:active{cursor:grabbing}
