@@ -4,18 +4,8 @@
       "id": "2025-03-27",
       "name": "March 23, 2025",
       "description": "Everyday Stuff",
+      "middle": "The rule of threes",
       "rows": [
-        {
-          "id": "density-materials",
-          "attribute": "density",
-          "color": "#4a95f9",
-          "prompt": "Sort by density (lowest to highest)",
-          "items": [
-            { "name": "Alcohol", "value": 0.8 },
-            { "name": "Water", "value": 1 },
-            { "name": "Blood", "value": 1.06 }
-          ]
-        },
         {
           "id": "speed-light",
           "attribute": "speed",
@@ -25,6 +15,17 @@
             { "name": "Water", "value": 1 },
             { "name": "Air", "value": 50 },
             { "name": "Vacuum", "value": 100 }
+          ]
+        },
+        {
+          "id": "density-materials",
+          "attribute": "density",
+          "color": "#4a95f9",
+          "prompt": "Sort by density (lowest to highest)",
+          "items": [
+            { "name": "Alcohol", "value": 0.8 },
+            { "name": "Water", "value": 1 },
+            { "name": "Blood", "value": 1.06 }
           ]
         },
         {

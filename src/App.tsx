@@ -4,6 +4,7 @@ import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { getDailyPuzzle, getDailyPuzzleForDate } from './data/gameDataUtils';
 import { Puzzle, Item } from './types/game';
 import GameRow from './components/GameRow';
+import { CalendarIcon } from '@heroicons/react/24/outline';
 
 function App() {
   // State for puzzle date
@@ -215,10 +216,20 @@ function App() {
       });
   };
 
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-indigo-800 to-indigo-950 text-white p-2 md:p-4 flex flex-col items-center">
-      <header className="w-full max-w-md mb-4 flex flex-col items-center">
-        <h1 className="text-xl md:text-2xl font-bold text-center mb-2">Perfect Line</h1>
+    <div 
+      style={{ backgroundColor: '#1e1b4b', color: 'white', minHeight: '100vh', padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <header 
+        style={{ width: '100%', maxWidth: '32rem', marginLeft: 'auto', marginRight: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      >
+        <h1 
+          style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem', textAlign: 'center' }}
+        >
+          Perfect Line
+        </h1>
         <div className="mb-2 md:mb-4 flex flex-wrap justify-center gap-2">
           <input 
             type="date" 
@@ -226,12 +237,14 @@ function App() {
             onChange={handleDateChange}
             className="bg-indigo-700 text-white p-1 md:p-2 rounded text-sm md:text-base"
           />
-          <button 
-            onClick={() => setPuzzleDate(new Date().toISOString().split('T')[0])}
-            className="bg-indigo-600 hover:bg-indigo-500 p-1 md:p-2 rounded text-sm md:text-base"
-          >
-            Today
-          </button>
+          <div className="relative">
+            <button
+              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md flex items-center space-x-1"
+              onClick={() => setPuzzleDate(new Date().toISOString().split('T')[0])}
+            >
+              <span>Today</span>
+            </button>
+          </div>
         </div>
         <div className="text-center mb-2 md:mb-4">
           <h2 className="text-lg md:text-xl font-semibold">{puzzleTitle}</h2>
@@ -240,7 +253,7 @@ function App() {
       </header>
 
       {puzzle && (
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-lg">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

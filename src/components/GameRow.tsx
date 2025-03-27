@@ -27,30 +27,27 @@ export function SortableItem({ id, name, isCorrect, isWrong }: SortableItemProps
     isDragging,
   } = useSortable({ id });
 
+  const transformString = CSS.Transform.toString(transform);
+  
   const style = {
-    transform: CSS.Transform.toString(transform),
     transition,
     zIndex: isDragging ? 100 : 1,
+    backgroundColor: isCorrect ? '#16a34a' : isWrong ? '#dc2626' : '#334155',
+    color: 'white',
+    padding: '0.5rem',
+    borderRadius: '0.25rem',
+    cursor: 'grab',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: isDragging ? 0.8 : 1,
+    transform: isDragging ? `${transformString} scale(1.05)` : transformString,
   };
-
-  // Determine color based on whether it's correct or not
-  let className = "bg-slate-700 hover:bg-slate-600 p-1.5 md:p-2 rounded text-white text-xs md:text-sm shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
-  
-  if (isCorrect) {
-    className = "bg-green-600 hover:bg-green-500 p-1.5 md:p-2 rounded text-white text-xs md:text-sm shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
-  } else if (isWrong) {
-    className = "bg-red-600 hover:bg-red-500 p-1.5 md:p-2 rounded text-white text-xs md:text-sm shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
-  }
-
-  if (isDragging) {
-    className += " opacity-80 scale-105";
-  }
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={className}
       {...attributes}
       {...listeners}
     >
@@ -61,9 +58,27 @@ export function SortableItem({ id, name, isCorrect, isWrong }: SortableItemProps
 
 export default function GameRow({ rowId: _, prompt, items, isSubmitted, correctPositions }: GameRowProps) {
   return (
-    <div className="mb-4 md:mb-6 p-3 md:p-4 bg-slate-800/50 rounded-lg shadow-md">
-      <div className="text-xs md:text-sm mb-2 md:mb-3 text-center font-medium">{prompt}</div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+    <div style={{ 
+      marginBottom: '1rem', 
+      padding: '0.75rem', 
+      backgroundColor: 'rgba(30, 41, 59, 0.5)', 
+      borderRadius: '0.5rem',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    }}>
+      <div style={{ 
+        fontSize: '0.875rem', 
+        marginBottom: '0.5rem', 
+        textAlign: 'center', 
+        fontWeight: 500,
+        color: 'white'
+      }}>
+        {prompt}
+      </div>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(3, 1fr)', 
+        gap: '0.5rem'
+      }}>
         {items.map((item, index) => (
           <SortableItem
             key={item.id}
