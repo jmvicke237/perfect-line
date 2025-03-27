@@ -45,6 +45,7 @@ export function SortableItem({ id, name, value, isCorrect, isWrong, isSubmitted 
     opacity: isDragging ? 0.8 : 1,
     transform: isDragging ? `${transformString} scale(1.05)` : transformString,
     flexDirection: 'column' as const,
+    textAlign: 'center' as const,
   };
 
   return (
@@ -54,11 +55,15 @@ export function SortableItem({ id, name, value, isCorrect, isWrong, isSubmitted 
       {...attributes}
       {...listeners}
     >
-      {name}
-      {isSubmitted && value !== undefined && (
-        <div style={{ fontSize: '0.75rem', marginTop: '0.25rem', opacity: 0.9 }}>
-          ({value})
-        </div>
+      {isSubmitted && value !== undefined ? (
+        <>
+          <div>{name}</div>
+          <div style={{ fontSize: '0.75rem', marginTop: '0.25rem', opacity: 0.9 }}>
+            value: {value}
+          </div>
+        </>
+      ) : (
+        name
       )}
     </div>
   );
