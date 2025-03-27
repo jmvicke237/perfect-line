@@ -10,18 +10,18 @@
           "id": "speed-light",
           "attribute": "speed",
           "color": "#4abbe3",
-          "prompt": "Sort these mediums by the speed that travels through them (slowest to fastest)",
+          "prompt": "Sort these mediums by the speed that travels through them (slowest to fastest in km per second)",
           "items": [
-            { "name": "Water", "value": 1 },
-            { "name": "Air", "value": 50 },
-            { "name": "Vacuum", "value": 100 }
+            { "name": "Water", "value": 225000},
+            { "name": "Air", "value": 299000 },
+            { "name": "Vacuum", "value": 300000 }
           ]
         },
         {
           "id": "density-materials",
           "attribute": "density",
           "color": "#4a95f9",
-          "prompt": "Sort by density (lowest to highest)",
+          "prompt": "Sort by density (lowest to highest in g/ml)",
           "items": [
             { "name": "Alcohol", "value": 0.8 },
             { "name": "Water", "value": 1 },
@@ -32,7 +32,7 @@
           "id": "percentage-income",
           "attribute": "percentage",
           "color": "#f9da4a",
-          "prompt": "Sort these by amount of money the average American spent on them in 2023 (lowest to highest)",
+          "prompt": "Sort these by amount of money the average American spent on them in 2023 (lowest to highest in dollars)",
           "items": [
             { "name": "Food", "value": 10000 },
             { "name": "Transportation", "value": 13000 },

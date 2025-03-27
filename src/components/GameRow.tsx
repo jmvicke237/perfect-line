@@ -13,11 +13,13 @@ interface GameRowProps {
 interface SortableItemProps {
   id: string;
   name: string;
+  value?: number;
   isCorrect?: boolean;
   isWrong?: boolean;
+  isSubmitted?: boolean;
 }
 
-export function SortableItem({ id, name, isCorrect, isWrong }: SortableItemProps) {
+export function SortableItem({ id, name, value, isCorrect, isWrong, isSubmitted }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -42,6 +44,7 @@ export function SortableItem({ id, name, isCorrect, isWrong }: SortableItemProps
     justifyContent: 'center',
     opacity: isDragging ? 0.8 : 1,
     transform: isDragging ? `${transformString} scale(1.05)` : transformString,
+    flexDirection: 'column' as const,
   };
 
   return (
@@ -52,6 +55,11 @@ export function SortableItem({ id, name, isCorrect, isWrong }: SortableItemProps
       {...listeners}
     >
       {name}
+      {isSubmitted && value !== undefined && (
+        <div style={{ fontSize: '0.75rem', marginTop: '0.25rem', opacity: 0.9 }}>
+          ({value})
+        </div>
+      )}
     </div>
   );
 }
@@ -84,8 +92,10 @@ export default function GameRow({ rowId: _, prompt, items, isSubmitted, correctP
             key={item.id}
             id={item.id}
             name={item.name}
+            value={item.value}
             isCorrect={isSubmitted && correctPositions?.[index]}
             isWrong={isSubmitted && correctPositions && !correctPositions[index]}
+            isSubmitted={isSubmitted}
           />
         ))}
       </div>
