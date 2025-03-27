@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { DndContext, closestCenter, DragEndEvent, useSensors, useSensor, PointerSensor, TouchSensor } from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
-import { getDailyPuzzle, getDailyPuzzleForDate } from './data/gameDataUtils';
+import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById } from './data/gameDataUtils';
 import { Puzzle, Item } from './types/game';
 import GameRow from './components/GameRow';
-import { CalendarIcon } from '@heroicons/react/24/outline';
 
 function App() {
   // State for puzzle date
@@ -56,8 +55,15 @@ function App() {
       setPuzzleTitle(dailyPuzzleInfo.name);
       setPuzzleDescription(dailyPuzzleInfo.description);
     } else {
-      setPuzzleTitle('Daily Puzzle');
-      setPuzzleDescription('A randomly selected puzzle for today');
+      // For random puzzles, get the actual puzzle definition to show its description
+      const puzzleDefinition = getPuzzleById(newPuzzle?.id || '');
+      if (puzzleDefinition) {
+        setPuzzleTitle(puzzleDefinition.name || 'Random Daily Puzzle');
+        setPuzzleDescription(puzzleDefinition.description || 'Try to arrange these items in the correct order');
+      } else {
+        setPuzzleTitle('Daily Puzzle');
+        setPuzzleDescription('A randomly selected puzzle for today');
+      }
     }
     
     if (newPuzzle) {
@@ -215,8 +221,6 @@ function App() {
         alert('Failed to copy results. Please try again.');
       });
   };
-
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   return (
     <div 
