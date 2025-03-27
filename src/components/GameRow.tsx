@@ -34,12 +34,12 @@ export function SortableItem({ id, name, isCorrect, isWrong }: SortableItemProps
   };
 
   // Determine color based on whether it's correct or not
-  let className = "bg-slate-700 hover:bg-slate-600 p-2 md:p-3 rounded text-white text-sm md:text-base shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
+  let className = "bg-slate-700 hover:bg-slate-600 p-1.5 md:p-2 rounded text-white text-xs md:text-sm shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
   
   if (isCorrect) {
-    className = "bg-green-600 hover:bg-green-500 p-2 md:p-3 rounded text-white text-sm md:text-base shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
+    className = "bg-green-600 hover:bg-green-500 p-1.5 md:p-2 rounded text-white text-xs md:text-sm shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
   } else if (isWrong) {
-    className = "bg-red-600 hover:bg-red-500 p-2 md:p-3 rounded text-white text-sm md:text-base shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
+    className = "bg-red-600 hover:bg-red-500 p-1.5 md:p-2 rounded text-white text-xs md:text-sm shadow-md cursor-grab touch-manipulation transition-all text-center aspect-square flex items-center justify-center";
   }
 
   if (isDragging) {
@@ -63,7 +63,7 @@ export default function GameRow({ rowId: _, prompt, items, isSubmitted, correctP
   return (
     <div className="mb-4 md:mb-6 p-3 md:p-4 bg-slate-800/50 rounded-lg shadow-md">
       <div className="text-xs md:text-sm mb-2 md:mb-3 text-center font-medium">{prompt}</div>
-      <div className="grid grid-cols-4 gap-2 md:gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
         {items.map((item, index) => (
           <SortableItem
             key={item.id}

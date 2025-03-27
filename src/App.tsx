@@ -217,7 +217,7 @@ function App() {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-indigo-800 to-indigo-950 text-white p-2 md:p-4 flex flex-col items-center">
-      <header className="w-full max-w-lg mb-4 flex flex-col items-center">
+      <header className="w-full max-w-md mb-4 flex flex-col items-center">
         <h1 className="text-xl md:text-2xl font-bold text-center mb-2">Perfect Line</h1>
         <div className="mb-2 md:mb-4 flex flex-wrap justify-center gap-2">
           <input 
@@ -240,7 +240,7 @@ function App() {
       </header>
 
       {puzzle && (
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-md">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

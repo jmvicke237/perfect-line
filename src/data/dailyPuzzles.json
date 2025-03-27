@@ -9,7 +9,13 @@
     {
       "date": "2025-03-24",
       "puzzleId": "2025-03-24",
-      "name": "April 2nd Puzzle",
+      "name": "March 25, 2025 Puzzle",
+      "description": "Explore scientific measurements"
+    },
+    {
+      "date": "2025-03-25",
+      "puzzleId": "2025-03-25",
+      "name": "March 25, 2025 Puzzle",
       "description": "Explore scientific measurements"
     }
   ]
