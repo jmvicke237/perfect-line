@@ -24,6 +24,7 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
   const [score, setScore] = useState(0);
   const [round, setRound] = useState(1);
   const [showingResult, setShowingResult] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   // Initialize the game
   useEffect(() => {
@@ -41,6 +42,7 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
     setGameOver(false);
     setWinner(null);
     setRoundResult(null);
+    setSelectedItemId(null);
   }, [items, maxRounds]);
 
   const handleSelection = (selectedItem: Item) => {
@@ -55,6 +57,9 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
     if (isCorrect) {
       setScore(prev => prev + 1);
     }
+    
+    // Save the selected item ID
+    setSelectedItemId(selectedItem.id);
     
     // Show result with attribute information
     setRoundResult(isCorrect);
@@ -79,6 +84,7 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
         setShowingResult(false);
         setWinner(null);
         setRoundResult(null);
+        setSelectedItemId(null);
       }
     }, 1500);
   };
@@ -94,6 +100,7 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
     setWinner(null);
     setRoundResult(null);
     setShowingResult(false);
+    setSelectedItemId(null);
   };
 
   if (!currentItems) {
@@ -119,11 +126,13 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
                 onClick={() => handleSelection(item)}
                 disabled={showingResult}
                 className={`flex-1 p-6 rounded-lg text-center transition duration-200 ${
-                  showingResult
-                    ? item.id === winner?.id
-                      ? 'bg-green-600'
-                      : 'bg-red-600'
-                    : 'bg-indigo-700 hover:bg-indigo-600'
+                  showingResult && item.id === selectedItemId
+                    ? roundResult
+                      ? 'bg-green-600' // Correct answer
+                      : 'bg-red-600'   // Incorrect answer
+                    : showingResult && item.id === winner?.id
+                      ? 'bg-green-600' // Show the correct answer
+                      : 'bg-indigo-700 hover:bg-indigo-600' // Default state
                 }`}
               >
                 <div className="font-bold text-lg mb-2">{item.name}</div>
