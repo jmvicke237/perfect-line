@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { DndContext, closestCenter, DragEndEvent, useSensors, useSensor, PointerSensor, TouchSensor, KeyboardSensor } from '@dnd-kit/core';
-import { SortableContext, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById, getDailyComparativePuzzle } from './data/gameDataUtils';
 import { Puzzle, Item, ComparativePuzzle } from './types/game';
-import GameRow from './components/GameRow';
 import ComparativeGame from './components/ComparativeGame';
+import { Game } from './components/Game';
 
 // Define game modes
 type GameMode = 'grid' | 'comparative';
@@ -19,33 +17,10 @@ function App() {
   
   // Initialize puzzle state
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
-  const [itemsByRow, setItemsByRow] = useState<Record<string, Item[]>>({});
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [correctPositions, setCorrectPositions] = useState<Record<string, boolean[]>>({});
-  const [gameComplete, setGameComplete] = useState(false);
-  const [score, setScore] = useState<[number, number]>([0, 0]);
-
+  
   // For comparative game mode
   const [comparativePuzzle, setComparativePuzzle] = useState<ComparativePuzzle | null>(null);
   
-  // Setup sensors for drag and drop
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5, // Reduce the activation distance for mobile
-      }
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 100, // Small delay for better touch handling
-        tolerance: 5, // Tolerance for small movements
-      }
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
-  );
-
   // Load puzzle on initial render
   useEffect(() => {
     loadDailyPuzzle();
@@ -85,100 +60,13 @@ function App() {
     if (newPuzzle) {
       setPuzzle(newPuzzle);
       
-      // Initialize items by row from new puzzle
-      const initialItems: Record<string, Item[]> = {};
-      
-      newPuzzle.rows.forEach(row => {
-        // Shuffle the items for each row
-        initialItems[row.id] = [...row.items].sort(() => Math.random() - 0.5);
-      });
-      
-      setItemsByRow(initialItems);
-      setIsSubmitted(false);
-      setCorrectPositions({});
-      setGameComplete(false);
-      setScore([0, 0]);
-      
       // Reset to show mode selection when loading a new puzzle
       setShowModeSelect(true);
     }
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || isSubmitted || !puzzle) return;
-
-    const activeId = active.id as string;
-    const overId = over.id as string;
-    
-    // Find which row these items belong to
-    let activeRowId: string | null = null;
-    let overRowId: string | null = null;
-
-    for (const row of puzzle.rows) {
-      if (row.items.some(item => item.id === activeId)) {
-        activeRowId = row.id;
-      }
-      if (row.items.some(item => item.id === overId)) {
-        overRowId = row.id;
-      }
-    }
-    
-    // Only allow reordering within the same row
-    if (activeRowId !== overRowId || !activeRowId) return;
-    
-    const rowItems = [...itemsByRow[activeRowId]];
-    const oldIndex = rowItems.findIndex(item => item.id === activeId);
-    const newIndex = rowItems.findIndex(item => item.id === overId);
-    
-    if (oldIndex === newIndex) return;
-
-    // Reorder the items within the row
-    const newRowItems = arrayMove(rowItems, oldIndex, newIndex);
-    
-    // Update the state
-    setItemsByRow({
-      ...itemsByRow,
-      [activeRowId]: newRowItems
-    });
-  };
-
-  const handleSubmit = () => {
-    if (!puzzle) return;
-
-    // Calculate results for each row
-    const newCorrectPositions: Record<string, boolean[]> = {};
-    let totalCorrect = 0;
-    let totalItems = 0;
-    
-    puzzle.rows.forEach(row => {
-      const rowItems = itemsByRow[row.id];
-      if (!rowItems) return;
-      
-      // Compare current order with correct order
-      const rowResults = rowItems.map((item, index) => {
-        const correctIndex = row.correctOrder.findIndex(id => id === item.id);
-        const isCorrect = correctIndex === index;
-        if (isCorrect) totalCorrect++;
-        totalItems++;
-        return isCorrect;
-      });
-      
-      newCorrectPositions[row.id] = rowResults;
-    });
-    
-    setCorrectPositions(newCorrectPositions);
-    setIsSubmitted(true);
-    setScore([totalCorrect, totalItems]);
-    setGameComplete(totalCorrect === totalItems);
-  };
-
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPuzzleDate(event.target.value);
-  };
-  
-  const resetGame = () => {
-    loadDailyPuzzle();
   };
 
   const selectGameMode = (mode: GameMode) => {
@@ -263,54 +151,7 @@ function App() {
           {showModeSelect ? (
             renderModeSelection()
           ) : gameMode === 'grid' ? (
-            <div className="w-full max-w-lg">
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                {puzzle.rows.map((row) => (
-                  <SortableContext key={row.id} items={itemsByRow[row.id]?.map(item => item.id) || []}>
-                    <GameRow 
-                      rowId={row.id}
-                      prompt={row.prompt}
-                      items={itemsByRow[row.id] || []}
-                      isSubmitted={isSubmitted}
-                      correctPositions={correctPositions[row.id]}
-                    />
-                  </SortableContext>
-                ))}
-              </DndContext>
-
-              <div className="mt-4 flex justify-center gap-2 md:gap-3 flex-wrap">
-                <button
-                  onClick={handleSubmit}
-                  disabled={isSubmitted && gameComplete}
-                  className={`px-3 py-1 md:px-4 md:py-2 rounded font-medium text-sm md:text-base ${
-                    isSubmitted && gameComplete 
-                      ? 'bg-green-700 text-white' 
-                      : 'bg-blue-600 hover:bg-blue-500 text-white'
-                  }`}
-                >
-                  {isSubmitted ? (gameComplete ? '🎉 Perfect!' : 'Try Again') : 'Submit'}
-                </button>
-                
-                {isSubmitted && (
-                  <button 
-                    onClick={resetGame}
-                    className="px-3 py-1 md:px-4 md:py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium text-white text-sm md:text-base"
-                  >
-                    Reset
-                  </button>
-                )}
-              </div>
-              
-              {isSubmitted && (
-                <div className="mt-4 text-center">
-                  <p className="text-sm md:text-base">Score: {score[0]}/{score[1]}</p>
-                </div>
-              )}
-            </div>
+            <Game puzzle={puzzle} />
           ) : comparativePuzzle ? (
             <ComparativeGame 
               items={comparativePuzzle.items}
