@@ -101,9 +101,44 @@ export const Game = ({ puzzle }: GameProps) => {
 
   const handleShare = () => {
     const shareText = generateShareText();
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(shareText);
-      alert('Results copied to clipboard!');
+    console.log("Attempting to share:", shareText);
+    
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareText)
+          .then(() => {
+            console.log("Share successful");
+            alert('Results copied to clipboard!');
+          })
+          .catch(err => {
+            console.error("Share failed:", err);
+            alert('Failed to copy to clipboard. Try again or manually copy your results.');
+          });
+      } else {
+        console.error("Clipboard API not available");
+        // Fallback for browsers without clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = shareText;
+        textArea.style.position = 'fixed';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+          const successful = document.execCommand('copy');
+          const msg = successful ? 'successful' : 'unsuccessful';
+          console.log('Fallback: Copying text command was ' + msg);
+          alert('Results copied to clipboard!');
+        } catch (err) {
+          console.error('Fallback: Could not copy text: ', err);
+          alert('Failed to copy. Please manually copy your results.');
+        }
+        
+        document.body.removeChild(textArea);
+      }
+    } catch (error) {
+      console.error("Share error:", error);
+      alert('An error occurred while trying to share. Please try again.');
     }
   };
 
