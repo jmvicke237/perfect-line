@@ -2,7 +2,6 @@
   "comparativePuzzles": [
     {
       "id": "planets-mass",
-      "date": "2025-03-29",
       "name": "Planet Mass",
       "description": "Compare the mass of different planets",
       "attribute": "mass (10^24 kg)",
@@ -19,7 +18,6 @@
     },
     {
       "id": "mountains-height",
-      "date": "2025-03-30",
       "name": "Mountain Heights",
       "description": "Compare the heights of famous mountains",
       "attribute": "height (meters)",
@@ -36,7 +34,6 @@
     },
     {
       "id": "animals-speed",
-      "date": "2025-03-31",
       "name": "Animal Speeds",
       "description": "Which animal is faster?",
       "attribute": "speed (km/h)",

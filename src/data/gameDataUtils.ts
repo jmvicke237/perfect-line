@@ -12,7 +12,6 @@ interface PuzzleRowItem {
 interface PuzzleRow {
   id: string;
   attribute: string;
-  color: string;
   prompt: string;
   items: PuzzleRowItem[];
 }
@@ -34,7 +33,6 @@ interface DailyPuzzleDefinition {
 
 interface ComparativePuzzleDefinition {
   id: string;
-  date: string;
   name: string;
   description: string;
   attribute: string;
@@ -101,7 +99,7 @@ export const createPlayablePuzzle = (puzzleId: string): Puzzle | null => {
   const rows: Row[] = puzzleDef.rows.map(rowDef => {
     const items: Item[] = rowDef.items.map((item: PuzzleRowItem) => {
       return {
-        id: `${rowDef.id}-${item.name}`,
+        id: item.id,
         name: item.name,
         value: item.value
       };
@@ -115,6 +113,7 @@ export const createPlayablePuzzle = (puzzleId: string): Puzzle | null => {
     return {
       id: rowDef.id,
       prompt: rowDef.prompt,
+      attribute: rowDef.attribute,
       items,
       correctOrder
     };
