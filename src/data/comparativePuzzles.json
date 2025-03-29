@@ -1,0 +1,55 @@
+{
+  "comparativePuzzles": [
+    {
+      "id": "planets-mass",
+      "date": "2025-03-29",
+      "name": "Planet Mass",
+      "description": "Compare the mass of different planets",
+      "attribute": "mass (10^24 kg)",
+      "items": [
+        { "id": "earth", "name": "Earth", "value": 5.97 },
+        { "id": "mars", "name": "Mars", "value": 0.642 },
+        { "id": "jupiter", "name": "Jupiter", "value": 1898 },
+        { "id": "venus", "name": "Venus", "value": 4.87 },
+        { "id": "mercury", "name": "Mercury", "value": 0.33 },
+        { "id": "saturn", "name": "Saturn", "value": 568 },
+        { "id": "neptune", "name": "Neptune", "value": 102 },
+        { "id": "uranus", "name": "Uranus", "value": 86.8 }
+      ]
+    },
+    {
+      "id": "mountains-height",
+      "date": "2025-03-30",
+      "name": "Mountain Heights",
+      "description": "Compare the heights of famous mountains",
+      "attribute": "height (meters)",
+      "items": [
+        { "id": "everest", "name": "Mount Everest", "value": 8849 },
+        { "id": "k2", "name": "K2", "value": 8611 },
+        { "id": "kilimanjaro", "name": "Kilimanjaro", "value": 5895 },
+        { "id": "denali", "name": "Denali", "value": 6190 },
+        { "id": "fuji", "name": "Mount Fuji", "value": 3776 },
+        { "id": "matterhorn", "name": "Matterhorn", "value": 4478 },
+        { "id": "whitney", "name": "Mount Whitney", "value": 4421 },
+        { "id": "elbrus", "name": "Mount Elbrus", "value": 5642 }
+      ]
+    },
+    {
+      "id": "animals-speed",
+      "date": "2025-03-31",
+      "name": "Animal Speeds",
+      "description": "Which animal is faster?",
+      "attribute": "speed (km/h)",
+      "items": [
+        { "id": "cheetah", "name": "Cheetah", "value": 120 },
+        { "id": "falcon", "name": "Peregrine Falcon", "value": 389 },
+        { "id": "sailfish", "name": "Sailfish", "value": 110 },
+        { "id": "tiger", "name": "Tiger", "value": 65 },
+        { "id": "coyote", "name": "Coyote", "value": 69 },
+        { "id": "rabbit", "name": "Rabbit", "value": 70 },
+        { "id": "ostrich", "name": "Ostrich", "value": 70 },
+        { "id": "greyhound", "name": "Greyhound", "value": 74 }
+      ]
+    }
+  ]
+} 

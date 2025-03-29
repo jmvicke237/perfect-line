@@ -18,6 +18,14 @@ export interface Puzzle {
   rows: Row[];
 }
 
+export interface ComparativePuzzle {
+  id: string;
+  name: string;
+  description: string;
+  attribute: string;
+  items: Item[];
+}
+
 export interface GameState {
   currentPuzzle: Puzzle | null;
   userOrder: Record<string, string[]>;

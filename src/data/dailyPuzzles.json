@@ -1,10 +1,32 @@
 {
   "dailyPuzzles": [
     {
+      "date": "2024-03-29",
+      "puzzleId": "2025-03-28",
+      "comparativePuzzleId": "planets-mass",
+      "name": "March 29, 2024 Puzzle",
+      "description": "Planets and Material Properties"
+    },
+    {
       "date": "2025-03-29",
       "puzzleId": "2025-03-28",
+      "comparativePuzzleId": "planets-mass",
       "name": "March 29, 2025 Puzzle",
       "description": "The rule of threes"
+    },
+    {
+      "date": "2025-03-30",
+      "puzzleId": "2025-03-24",
+      "comparativePuzzleId": "mountains-height",
+      "name": "March 30, 2025 Puzzle",
+      "description": "Explore heights and depths"
+    },
+    {
+      "date": "2025-03-31",
+      "puzzleId": "2025-03-25",
+      "comparativePuzzleId": "animals-speed",
+      "name": "March 31, 2025 Puzzle",
+      "description": "Test your knowledge of animals"
     },
     {
       "date": "2025-03-23",

@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { DndContext, closestCenter, DragEndEvent, useSensors, useSensor, PointerSensor, TouchSensor, KeyboardSensor } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById } from './data/gameDataUtils';
-import { Puzzle, Item } from './types/game';
+import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById, getDailyComparativePuzzle } from './data/gameDataUtils';
+import { Puzzle, Item, ComparativePuzzle } from './types/game';
 import GameRow from './components/GameRow';
 import ComparativeGame from './components/ComparativeGame';
-import { format } from 'date-fns';
 
 // Define game modes
 type GameMode = 'grid' | 'comparative';
@@ -27,8 +26,7 @@ function App() {
   const [score, setScore] = useState<[number, number]>([0, 0]);
 
   // For comparative game mode
-  const [allItems, setAllItems] = useState<Item[]>([]);
-  const [gameAttribute, setGameAttribute] = useState<string>("");
+  const [comparativePuzzle, setComparativePuzzle] = useState<ComparativePuzzle | null>(null);
   
   // Setup sensors for drag and drop
   const sensors = useSensors(
@@ -63,6 +61,10 @@ function App() {
     // Load the daily puzzle for the selected date
     const newPuzzle = getDailyPuzzle(puzzleDate);
     
+    // Load comparative puzzle for the selected date
+    const newComparativePuzzle = getDailyComparativePuzzle(puzzleDate);
+    setComparativePuzzle(newComparativePuzzle);
+    
     // Update title and description
     const dailyPuzzleInfo = getDailyPuzzleForDate(puzzleDate);
     if (dailyPuzzleInfo) {
@@ -85,24 +87,13 @@ function App() {
       
       // Initialize items by row from new puzzle
       const initialItems: Record<string, Item[]> = {};
-      const allItemsList: Item[] = [];
-      
-      // Get attribute from first row to use in comparative mode
-      let attribute = "";
-      if (newPuzzle.rows.length > 0) {
-        attribute = newPuzzle.rows[0].attribute || "value";
-      }
-      setGameAttribute(attribute);
       
       newPuzzle.rows.forEach(row => {
         // Shuffle the items for each row
         initialItems[row.id] = [...row.items].sort(() => Math.random() - 0.5);
-        // Add all items to a flat list for comparative mode
-        allItemsList.push(...row.items);
       });
       
       setItemsByRow(initialItems);
-      setAllItems(allItemsList);
       setIsSubmitted(false);
       setCorrectPositions({});
       setGameComplete(false);
@@ -210,15 +201,17 @@ function App() {
           </p>
         </button>
         
-        <button
-          onClick={() => selectGameMode('comparative')}
-          className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
-        >
-          <h3 className="text-xl font-bold mb-2">Higher or Lower</h3>
-          <p className="text-sm opacity-80">
-            Compare pairs of items and choose the one with the higher value. The winner stays for the next round!
-          </p>
-        </button>
+        {comparativePuzzle && (
+          <button
+            onClick={() => selectGameMode('comparative')}
+            className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
+          >
+            <h3 className="text-xl font-bold mb-2">Higher or Lower</h3>
+            <p className="text-sm opacity-80">
+              Compare pairs of items and choose the one with the higher value. The winner stays for the next round!
+            </p>
+          </button>
+        )}
       </div>
     </div>
   );
@@ -318,14 +311,25 @@ function App() {
                 </div>
               )}
             </div>
-          ) : (
+          ) : comparativePuzzle ? (
             <ComparativeGame 
-              items={allItems}
+              items={comparativePuzzle.items}
               maxRounds={6}
-              title={puzzleTitle}
-              description={`Select the item with the HIGHER ${gameAttribute}`}
-              attribute={gameAttribute}
+              title={comparativePuzzle.name}
+              description={`Select the item with the HIGHER ${comparativePuzzle.attribute}`}
+              attribute={comparativePuzzle.attribute}
             />
+          ) : (
+            <div className="w-full max-w-lg mx-auto text-center p-6 bg-indigo-800 rounded-lg">
+              <h3 className="text-xl font-bold mb-4">No Comparative Puzzle Available</h3>
+              <p className="mb-4">There is no Higher/Lower puzzle available for this date.</p>
+              <button
+                onClick={() => setShowModeSelect(true)}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium"
+              >
+                Choose Another Mode
+              </button>
+            </div>
           )}
         </>
       )}
