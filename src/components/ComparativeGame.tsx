@@ -126,18 +126,34 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
                 onClick={() => handleSelection(item)}
                 disabled={showingResult}
                 className={`flex-1 p-6 rounded-lg text-center transition duration-200 ${
-                  showingResult && item.id === selectedItemId
-                    ? roundResult
-                      ? 'bg-green-600' // Correct answer
-                      : 'bg-red-600'   // Incorrect answer
-                    : showingResult && item.id === winner?.id
-                      ? 'bg-green-600' // Show the correct answer
-                      : 'bg-indigo-700 hover:bg-indigo-600' // Default state
+                  showingResult 
+                    ? (item.id === selectedItemId 
+                        ? (roundResult 
+                            ? 'bg-green-500 border-2 border-green-300' // Selected and correct
+                            : 'bg-red-500 border-2 border-red-300')    // Selected and wrong
+                        : (item.id === winner?.id 
+                            ? 'bg-green-600' // Correct answer (not selected)
+                            : 'bg-indigo-700')) // Not selected, not winner
+                    : 'bg-indigo-700 hover:bg-indigo-600' // Not showing result yet
                 }`}
               >
                 <div className="font-bold text-lg mb-2">{item.name}</div>
                 {showingResult && (
-                  <div className="text-sm opacity-80">Value: {item.value}</div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-sm opacity-90 font-semibold">Value: {item.value}</div>
+                    {item.id === selectedItemId && (
+                      <div className="mt-2 text-sm font-bold">
+                        {roundResult 
+                          ? "✓ You picked correctly!" 
+                          : "✗ Wrong choice"}
+                      </div>
+                    )}
+                    {item.id === winner?.id && item.id !== selectedItemId && (
+                      <div className="mt-2 text-sm font-bold">
+                        ✓ This was the correct answer
+                      </div>
+                    )}
+                  </div>
                 )}
               </button>
             ))}
