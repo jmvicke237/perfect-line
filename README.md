@@ -53,67 +53,59 @@ export default tseslint.config({
 })
 ```
 
-# Perfect Line
+# Perfect Line Duos
 
-A daily puzzle game where you arrange items in the correct order based on their properties.
+A daily puzzle game where players arrange items in the correct order. Each puzzle presents a set of items that need to be sorted based on their values or properties.
 
-## How to Play
+## Features
 
-1. Each row shows a set of items that need to be arranged in a specific order
-2. Drag and drop the items to put them in the correct sequence
-3. Click "Submit" to check your answers
-4. Green squares indicate correct positions, red squares indicate incorrect positions
-5. Try to get a perfect score!
+- Daily puzzles with unique challenges
+- Drag and drop interface for arranging items
+- Immediate feedback on correct/incorrect positions
+- Score tracking and streak system
+- Mobile-friendly design
 
-## Development
+## Getting Started
 
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/perfect-line-duos.git
+cd perfect-line-duos
 ```
+
+2. Install dependencies:
+```bash
 npm install
+```
+
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-## Deployment
+4. Open your browser and navigate to `http://localhost:5173`
 
-This project can be easily deployed using one of these free hosting services:
+## How to Play
 
-### Option 1: Netlify (Recommended)
+1. Each day presents a new puzzle with a set of items to arrange
+2. Drag and drop items to reorder them
+3. Click "Submit" when you think you have the correct order
+4. Items will turn green if correct and red if incorrect
+5. Try to maintain a streak by solving puzzles correctly
 
-1. Sign up for a free account at [Netlify](https://www.netlify.com/)
-2. From the Netlify dashboard, click "Add new site" → "Import an existing project"
-3. Connect to your GitHub repository
-4. Configure the build settings:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-5. Click "Deploy site"
+## Development
 
-Your site will be live at a Netlify URL like `https://perfect-line.netlify.app` (you can customize this in the site settings)
+- Built with Vite + React + TypeScript
+- Styled with Tailwind CSS
+- Drag and drop functionality using dnd-kit
 
-### Option 2: Vercel
+## License
 
-1. Sign up for a free account at [Vercel](https://vercel.com/)
-2. From the Vercel dashboard, click "Add New" → "Project"
-3. Connect to your GitHub repository
-4. The build settings should be automatically detected
-5. Click "Deploy"
-
-Your site will be live at a Vercel URL like `https://perfect-line.vercel.app`
-
-### Option 3: Manual GitHub Pages Deployment
-
-To deploy to GitHub Pages manually:
-
-1. Update your `package.json` to include:
-   ```json
-   "scripts": {
-     "predeploy": "npm run build",
-     "deploy": "gh-pages -d dist"
-   }
-   ```
-2. Install the gh-pages package:
-   ```
-   npm install --save-dev gh-pages
-   ```
-3. Run the deploy command:
-   ```
-   npm run deploy
-   ```
+This project is licensed under the MIT License - see the LICENSE file for details.

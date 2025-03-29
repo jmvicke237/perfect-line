@@ -1,6 +1,12 @@
 {
   "dailyPuzzles": [
     {
+      "date": "2025-03-29",
+      "puzzleId": "2025-03-28",
+      "name": "March 29, 2025 Puzzle",
+      "description": "The rule of threes"
+    },
+    {
       "date": "2025-03-23",
       "puzzleId": "2025-03-23",
       "name": "March 23, 2025 Puzzle",
@@ -22,6 +28,12 @@
       "date": "2025-03-27",
       "puzzleId": "2025-03-27",
       "name": "March 27, 2025 Puzzle",
+      "description": "The rule of threes"
+    },
+    {
+      "date": "2025-03-28",
+      "puzzleId": "2025-03-28",
+      "name": "March 28, 2025 Puzzle",
       "description": "The rule of threes"
     }
   ]

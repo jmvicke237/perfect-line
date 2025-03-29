@@ -1,15 +1,22 @@
 import { useState, useEffect } from 'react';
-import { DndContext, closestCenter, DragEndEvent, useSensors, useSensor, PointerSensor, TouchSensor } from '@dnd-kit/core';
-import { SortableContext, arrayMove } from '@dnd-kit/sortable';
+import { DndContext, closestCenter, DragEndEvent, useSensors, useSensor, PointerSensor, TouchSensor, KeyboardSensor } from '@dnd-kit/core';
+import { SortableContext, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById } from './data/gameDataUtils';
 import { Puzzle, Item } from './types/game';
 import GameRow from './components/GameRow';
+import ComparativeGame from './components/ComparativeGame';
+import { format } from 'date-fns';
+
+// Define game modes
+type GameMode = 'grid' | 'comparative';
 
 function App() {
-  // State for puzzle date
+  // State for puzzle date and game mode
   const [puzzleDate, setPuzzleDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [puzzleTitle, setPuzzleTitle] = useState<string>('Today\'s Puzzle');
   const [puzzleDescription, setPuzzleDescription] = useState<string>('');
+  const [gameMode, setGameMode] = useState<GameMode>('grid');
+  const [showModeSelect, setShowModeSelect] = useState<boolean>(true);
   
   // Initialize puzzle state
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
@@ -18,6 +25,10 @@ function App() {
   const [correctPositions, setCorrectPositions] = useState<Record<string, boolean[]>>({});
   const [gameComplete, setGameComplete] = useState(false);
   const [score, setScore] = useState<[number, number]>([0, 0]);
+
+  // For comparative game mode
+  const [allItems, setAllItems] = useState<Item[]>([]);
+  const [gameAttribute, setGameAttribute] = useState<string>("");
   
   // Setup sensors for drag and drop
   const sensors = useSensors(
@@ -31,6 +42,9 @@ function App() {
         delay: 100, // Small delay for better touch handling
         tolerance: 5, // Tolerance for small movements
       }
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
     })
   );
 
@@ -71,16 +85,31 @@ function App() {
       
       // Initialize items by row from new puzzle
       const initialItems: Record<string, Item[]> = {};
+      const allItemsList: Item[] = [];
+      
+      // Get attribute from first row to use in comparative mode
+      let attribute = "";
+      if (newPuzzle.rows.length > 0) {
+        attribute = newPuzzle.rows[0].attribute || "value";
+      }
+      setGameAttribute(attribute);
+      
       newPuzzle.rows.forEach(row => {
         // Shuffle the items for each row
         initialItems[row.id] = [...row.items].sort(() => Math.random() - 0.5);
+        // Add all items to a flat list for comparative mode
+        allItemsList.push(...row.items);
       });
       
       setItemsByRow(initialItems);
+      setAllItems(allItemsList);
       setIsSubmitted(false);
       setCorrectPositions({});
       setGameComplete(false);
       setScore([0, 0]);
+      
+      // Reset to show mode selection when loading a new puzzle
+      setShowModeSelect(true);
     }
   };
 
@@ -94,7 +123,7 @@ function App() {
     // Find which row these items belong to
     let activeRowId: string | null = null;
     let overRowId: string | null = null;
-    
+
     for (const row of puzzle.rows) {
       if (row.items.some(item => item.id === activeId)) {
         activeRowId = row.id;
@@ -125,7 +154,7 @@ function App() {
 
   const handleSubmit = () => {
     if (!puzzle) return;
-    
+
     // Calculate results for each row
     const newCorrectPositions: Record<string, boolean[]> = {};
     let totalCorrect = 0;
@@ -161,66 +190,38 @@ function App() {
     loadDailyPuzzle();
   };
 
-  // Generate a shareable result with emoji squares
-  const generateShareableResult = () => {
-    if (!isSubmitted || !puzzle) return '';
-    
-    const dateStr = puzzleDate || new Date().toISOString().split('T')[0];
-    // Create date object with timezone handling to avoid off-by-one errors
-    const dateObj = new Date(dateStr + 'T12:00:00'); // Add noon time to avoid timezone issues
-    const formattedDate = dateObj.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-    
-    let shareText = `Perfect Line - ${formattedDate}\n\n`;
-    
-    // Add emoji grid for each row
-    puzzle.rows.forEach(row => {
-      const rowResults = correctPositions[row.id] || [];
-      rowResults.forEach(isCorrect => {
-        shareText += isCorrect ? '🟩' : '🟥';
-      });
-      shareText += '\n';
-    });
-    
-    // Add score
-    shareText += `\n${score[0]}/${score[1]} correct`;
-    
-    return shareText;
+  const selectGameMode = (mode: GameMode) => {
+    setGameMode(mode);
+    setShowModeSelect(false);
   };
-  
-  const handleShare = async () => {
-    const shareText = generateShareableResult();
-    
-    if (navigator.share && navigator.canShare?.({ text: shareText })) {
-      try {
-        await navigator.share({
-          title: 'Perfect Line Results',
-          text: shareText
-        });
-      } catch (error) {
-        console.error('Error sharing:', error);
-        // Fallback to clipboard if sharing fails
-        copyToClipboard(shareText);
-      }
-    } else {
-      // Fallback for browsers that don't support navigator.share
-      copyToClipboard(shareText);
-    }
-  };
-  
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        alert('Results copied to clipboard!');
-      })
-      .catch(err => {
-        console.error('Failed to copy results:', err);
-        alert('Failed to copy results. Please try again.');
-      });
-  };
+
+  // Mode selection screen
+  const renderModeSelection = () => (
+    <div className="w-full max-w-lg mx-auto bg-indigo-900 p-6 rounded-lg">
+      <h2 className="text-2xl font-bold mb-6 text-center">Select Game Mode</h2>
+      <div className="flex flex-col gap-4">
+        <button
+          onClick={() => selectGameMode('grid')}
+          className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
+        >
+          <h3 className="text-xl font-bold mb-2">Grid Mode</h3>
+          <p className="text-sm opacity-80">
+            Arrange items in the correct order within each row
+          </p>
+        </button>
+        
+        <button
+          onClick={() => selectGameMode('comparative')}
+          className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
+        >
+          <h3 className="text-xl font-bold mb-2">Higher or Lower</h3>
+          <p className="text-sm opacity-80">
+            Compare pairs of items and choose the one with the higher value. The winner stays for the next round!
+          </p>
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div 
@@ -249,6 +250,14 @@ function App() {
               <span>Today</span>
             </button>
           </div>
+          {!showModeSelect && (
+            <button
+              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md"
+              onClick={() => setShowModeSelect(true)}
+            >
+              Change Mode
+            </button>
+          )}
         </div>
         <div className="text-center mb-2 md:mb-4">
           <h2 className="text-lg md:text-xl font-semibold">{puzzleTitle}</h2>
@@ -257,63 +266,68 @@ function App() {
       </header>
 
       {puzzle && (
-        <div className="w-full max-w-lg">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            {puzzle.rows.map((row) => (
-              <SortableContext key={row.id} items={itemsByRow[row.id]?.map(item => item.id) || []}>
-                <GameRow 
-                  rowId={row.id}
-                  prompt={row.prompt}
-                  items={itemsByRow[row.id] || []}
-                  isSubmitted={isSubmitted}
-                  correctPositions={correctPositions[row.id]}
-                />
-              </SortableContext>
-            ))}
-          </DndContext>
+        <>
+          {showModeSelect ? (
+            renderModeSelection()
+          ) : gameMode === 'grid' ? (
+            <div className="w-full max-w-lg">
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                {puzzle.rows.map((row) => (
+                  <SortableContext key={row.id} items={itemsByRow[row.id]?.map(item => item.id) || []}>
+                    <GameRow 
+                      rowId={row.id}
+                      prompt={row.prompt}
+                      items={itemsByRow[row.id] || []}
+                      isSubmitted={isSubmitted}
+                      correctPositions={correctPositions[row.id]}
+                    />
+                  </SortableContext>
+                ))}
+              </DndContext>
 
-          <div className="mt-4 flex justify-center gap-2 md:gap-3 flex-wrap">
-            <button 
-              onClick={handleSubmit}
-              disabled={isSubmitted && gameComplete}
-              className={`px-3 py-1 md:px-4 md:py-2 rounded font-medium text-sm md:text-base ${
-                isSubmitted && gameComplete 
-                  ? 'bg-green-700 text-white' 
-                  : 'bg-blue-600 hover:bg-blue-500 text-white'
-              }`}
-            >
-              {isSubmitted ? (gameComplete ? '🎉 Perfect!' : 'Try Again') : 'Submit'}
-            </button>
-            
-            {isSubmitted && (
-              <button 
-                onClick={resetGame}
-                className="px-3 py-1 md:px-4 md:py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium text-white text-sm md:text-base"
-              >
-                Reset
-              </button>
-            )}
-            
-            {isSubmitted && (
-              <button 
-                onClick={handleShare}
-                className="px-3 py-1 md:px-4 md:py-2 bg-green-600 hover:bg-green-500 rounded font-medium text-white text-sm md:text-base"
-              >
-                Share
-              </button>
-            )}
-          </div>
-          
-          {isSubmitted && (
-            <div className="mt-4 text-center">
-              <p className="text-sm md:text-base">Score: {score[0]}/{score[1]}</p>
+              <div className="mt-4 flex justify-center gap-2 md:gap-3 flex-wrap">
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSubmitted && gameComplete}
+                  className={`px-3 py-1 md:px-4 md:py-2 rounded font-medium text-sm md:text-base ${
+                    isSubmitted && gameComplete 
+                      ? 'bg-green-700 text-white' 
+                      : 'bg-blue-600 hover:bg-blue-500 text-white'
+                  }`}
+                >
+                  {isSubmitted ? (gameComplete ? '🎉 Perfect!' : 'Try Again') : 'Submit'}
+                </button>
+                
+                {isSubmitted && (
+                  <button 
+                    onClick={resetGame}
+                    className="px-3 py-1 md:px-4 md:py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium text-white text-sm md:text-base"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+              
+              {isSubmitted && (
+                <div className="mt-4 text-center">
+                  <p className="text-sm md:text-base">Score: {score[0]}/{score[1]}</p>
+                </div>
+              )}
             </div>
+          ) : (
+            <ComparativeGame 
+              items={allItems}
+              maxRounds={6}
+              title={puzzleTitle}
+              description={`Select the item with the HIGHER ${gameAttribute}`}
+              attribute={gameAttribute}
+            />
           )}
-        </div>
+        </>
       )}
     </div>
   );
