@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById, getDailyComparativePuzzle } from './data/gameDataUtils';
-import { Puzzle, Item, ComparativePuzzle } from './types/game';
+import { Puzzle, ComparativePuzzle } from './types/game';
 import ComparativeGame from './components/ComparativeGame';
 import { Game } from './components/Game';
 
