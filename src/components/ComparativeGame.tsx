@@ -25,6 +25,8 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
   const [round, setRound] = useState(1);
   const [showingResult, setShowingResult] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+  const [playAgainHovered, setPlayAgainHovered] = useState(false);
 
   // Initialize the game
   useEffect(() => {
@@ -108,48 +110,62 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto">
-      <div className="text-center mb-6">
-        <h2 className="text-xl font-bold mb-2">{title}</h2>
-        <p className="text-sm opacity-80 mb-2">{description}</p>
-        <div className="text-sm font-medium">
+    <div style={{ width: '100%', maxWidth: '32rem', margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>{title}</h2>
+        <p style={{ fontSize: '0.875rem', opacity: 0.8, marginBottom: '0.5rem' }}>{description}</p>
+        <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>
           Round: {round}/{maxRounds} | Score: {score}/{maxRounds}
         </div>
       </div>
 
       {!gameOver ? (
-        <div className="flex flex-col space-y-4">
-          <div className="flex justify-between items-center gap-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
             {currentItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleSelection(item)}
                 disabled={showingResult}
-                className={`flex-1 p-6 rounded-lg text-center transition duration-200 ${
-                  showingResult 
+                onMouseEnter={() => !showingResult && setHoveredItemId(item.id)}
+                onMouseLeave={() => setHoveredItemId(null)}
+                style={{
+                  padding: '1.5rem',
+                  borderRadius: '0.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  transition: 'all 0.2s',
+                  backgroundColor: showingResult 
                     ? (item.id === selectedItemId 
-                        ? (roundResult 
-                            ? 'bg-green-500 border-2 border-green-300' // Selected and correct
-                            : 'bg-red-500 border-2 border-red-300')    // Selected and wrong
-                        : (item.id === winner?.id 
-                            ? 'bg-green-600' // Correct answer (not selected)
-                            : 'bg-indigo-700')) // Not selected, not winner
-                    : 'bg-indigo-700 hover:bg-indigo-600' // Not showing result yet
-                }`}
+                      ? (roundResult ? '#22c55e' : '#ef4444') // Green or red for selection
+                      : (item.id === winner?.id ? '#16a34a' : '#4338ca')) // Green for winner, indigo for others
+                    : hoveredItemId === item.id ? '#4f46e5' : '#4338ca', // Lighter indigo on hover
+                  border: showingResult && (item.id === selectedItemId || item.id === winner?.id)
+                    ? '3px solid white'
+                    : 'none',
+                  cursor: showingResult ? 'default' : 'pointer'
+                }}
               >
-                <div className="font-bold text-lg mb-2">{item.name}</div>
+                <div style={{ fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem', color: 'white' }}>
+                  {item.name}
+                </div>
                 {showingResult && (
-                  <div className="flex flex-col items-center">
-                    <div className="text-sm opacity-90 font-semibold">Value: {item.value}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ fontSize: '0.875rem', fontWeight: '600', color: 'white' }}>
+                      Value: {item.value}
+                    </div>
                     {item.id === selectedItemId && (
-                      <div className="mt-2 text-sm font-bold">
+                      <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', fontWeight: 'bold', color: 'white' }}>
                         {roundResult 
                           ? "✓ You picked correctly!" 
                           : "✗ Wrong choice"}
                       </div>
                     )}
                     {item.id === winner?.id && item.id !== selectedItemId && (
-                      <div className="mt-2 text-sm font-bold">
+                      <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', fontWeight: 'bold', color: 'white' }}>
                         ✓ This was the correct answer
                       </div>
                     )}
@@ -160,21 +176,49 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
           </div>
 
           {showingResult && (
-            <div className={`p-3 text-center rounded-md ${roundResult ? 'bg-green-800' : 'bg-red-800'}`}>
+            <div style={{
+              padding: '0.75rem',
+              textAlign: 'center',
+              borderRadius: '0.375rem',
+              backgroundColor: roundResult ? '#15803d' : '#b91c1c',
+              color: 'white',
+              fontWeight: '500'
+            }}>
               {roundResult 
                 ? `Correct! ${winner?.name} has a higher ${attribute} (${winner?.value}).` 
                 : `Incorrect. ${winner?.name} has a higher ${attribute} (${winner?.value}).`}
-              {round < maxRounds && <div className="mt-2 text-xs opacity-75">The winning item will face a new challenger next round!</div>}
+              {round < maxRounds && (
+                <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', opacity: '0.75' }}>
+                  The winning item will face a new challenger next round!
+                </div>
+              )}
             </div>
           )}
         </div>
       ) : (
-        <div className="text-center p-6 bg-indigo-800 rounded-lg">
-          <h3 className="text-xl font-bold mb-2">Game Over!</h3>
-          <p className="text-lg mb-4">Your final score: {score}/{maxRounds}</p>
+        <div style={{
+          textAlign: 'center',
+          padding: '1.5rem',
+          backgroundColor: '#3730a3',
+          borderRadius: '0.5rem',
+          color: 'white'
+        }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Game Over!</h3>
+          <p style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>Your final score: {score}/{maxRounds}</p>
           <button
             onClick={resetGame}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium"
+            onMouseEnter={() => setPlayAgainHovered(true)}
+            onMouseLeave={() => setPlayAgainHovered(false)}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: playAgainHovered ? '#6366f1' : '#4f46e5',
+              borderRadius: '0.375rem',
+              fontWeight: '500',
+              cursor: 'pointer',
+              border: 'none',
+              color: 'white',
+              transition: 'background-color 0.2s'
+            }}
           >
             Play Again
           </button>
