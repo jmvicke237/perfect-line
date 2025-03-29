@@ -27,6 +27,8 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
   const [playAgainHovered, setPlayAgainHovered] = useState(false);
+  const [shareHovered, setShareHovered] = useState(false);
+  const [roundResults, setRoundResults] = useState<boolean[]>([]);
 
   // Initialize the game
   useEffect(() => {
@@ -45,6 +47,7 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
     setWinner(null);
     setRoundResult(null);
     setSelectedItemId(null);
+    setRoundResults([]);
   }, [items, maxRounds]);
 
   const handleSelection = (selectedItem: Item) => {
@@ -67,6 +70,9 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
     setRoundResult(isCorrect);
     setWinner(higherValueItem);
     setShowingResult(true);
+    
+    // Add result to round results array
+    setRoundResults(prev => [...prev, isCorrect]);
     
     // Set timeout to move to next round
     setTimeout(() => {
@@ -103,6 +109,20 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
     setRoundResult(null);
     setShowingResult(false);
     setSelectedItemId(null);
+    setRoundResults([]);
+  };
+
+  const generateShareText = () => {
+    const emoji = roundResults.map(result => result ? '🟩' : '🟥').join('');
+    return `Perfect Line: Higher/Lower\nScore: ${score}/${maxRounds}\n\n${emoji}\n\nPlay at: https://justinvickers.github.io/perfect-line/`;
+  };
+
+  const handleShare = () => {
+    const shareText = generateShareText();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText);
+      alert('Results copied to clipboard!');
+    }
   };
 
   if (!currentItems) {
@@ -205,23 +225,55 @@ const ComparativeGame: React.FC<ComparativeGameProps> = ({
         }}>
           <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Game Over!</h3>
           <p style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>Your final score: {score}/{maxRounds}</p>
-          <button
-            onClick={resetGame}
-            onMouseEnter={() => setPlayAgainHovered(true)}
-            onMouseLeave={() => setPlayAgainHovered(false)}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: playAgainHovered ? '#6366f1' : '#4f46e5',
-              borderRadius: '0.375rem',
-              fontWeight: '500',
-              cursor: 'pointer',
-              border: 'none',
-              color: 'white',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            Play Again
-          </button>
+          
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1rem' }}>
+            {roundResults.map((result, index) => (
+              <div key={index} style={{
+                width: '1.5rem',
+                height: '1.5rem',
+                backgroundColor: result ? '#22c55e' : '#ef4444',
+                borderRadius: '0.25rem'
+              }}></div>
+            ))}
+          </div>
+          
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+            <button
+              onClick={handleShare}
+              onMouseEnter={() => setShareHovered(true)}
+              onMouseLeave={() => setShareHovered(false)}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: shareHovered ? '#2563eb' : '#1d4ed8',
+                borderRadius: '0.375rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                border: 'none',
+                color: 'white',
+                transition: 'background-color 0.2s'
+              }}
+            >
+              Share Results
+            </button>
+            
+            <button
+              onClick={resetGame}
+              onMouseEnter={() => setPlayAgainHovered(true)}
+              onMouseLeave={() => setPlayAgainHovered(false)}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: playAgainHovered ? '#6366f1' : '#4f46e5',
+                borderRadius: '0.375rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                border: 'none',
+                color: 'white',
+                transition: 'background-color 0.2s'
+              }}
+            >
+              Play Again
+            </button>
+          </div>
         </div>
       )}
     </div>

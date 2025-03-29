@@ -96,7 +96,7 @@ export const Game = ({ puzzle }: GameProps) => {
       return rowResults?.map(result => result ? '🟩' : '🟥').join('');
     }).join('\n');
 
-    return `Perfect Line: ${correct}/${total}\n\n${emojiGrid}\n\nPlay at: perfectline.com`;
+    return `Perfect Line: Grid Mode ${correct}/${total}\n\n${emojiGrid}\n\nPlay at: https://justinvickers.github.io/perfect-line/`;
   };
 
   const handleShare = () => {
@@ -149,6 +149,24 @@ export const Game = ({ puzzle }: GameProps) => {
               <p className="text-sm text-gray-300 mb-4">
                 {correct === total ? "Perfect!" : "Keep practicing!"}
               </p>
+              
+              <div className="mb-4">
+                {gameState.currentPuzzle?.rows.map((row, rowIndex) => (
+                  <div key={rowIndex} className="flex justify-center mb-1">
+                    {gameState.results[row.id]?.map((result, index) => (
+                      <div 
+                        key={index} 
+                        className="w-6 h-6 mx-0.5"
+                        style={{
+                          backgroundColor: result ? '#22c55e' : '#ef4444',
+                          borderRadius: '4px'
+                        }}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+              
               <div className="flex justify-center gap-2">
                 <button
                   onClick={handleShare}
