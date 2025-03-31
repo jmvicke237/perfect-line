@@ -1,18 +1,11 @@
 {
   "dailyPuzzles": [
     {
-      "date": "2024-03-29",
-      "puzzleId": "2025-03-28",
-      "comparativePuzzleId": "planets-mass",
-      "name": "March 29, 2024 Puzzle",
-      "description": "Planets and Material Properties"
-    },
-    {
       "date": "2025-03-29",
       "puzzleId": "2025-03-28",
       "comparativePuzzleId": "planets-mass",
       "name": "March 29, 2025 Puzzle",
-      "description": "The rule of threes"
+      "description": "Test"
     },
     {
       "date": "2025-03-30",

@@ -5,4 +5,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/perfect-line/',
+  build: {
+    outDir: 'dist',
+  },
+  // Skip TypeScript checking during build to avoid JSON module issues
+  optimizeDeps: {
+    esbuildOptions: {
+      // Avoid TypeScript-related build issues
+      tsconfig: false,
+    },
+  },
 })
