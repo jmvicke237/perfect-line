@@ -147,3 +147,7 @@ The production deployment uses GitHub Actions and GitHub Secrets to securely han
    - `VITE_FIREBASE_MEASUREMENT_ID`
 
 The GitHub Actions workflow will use these secrets to create a secure `.env` file during the build process.
+
+## Deployment Status
+
+Last deployment: Updated with secure Firebase configuration using GitHub Secrets.
