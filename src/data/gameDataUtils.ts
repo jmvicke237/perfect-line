@@ -1,15 +1,10 @@
-import * as puzzlesDataRaw from './puzzles.json';
-import * as dailyPuzzlesDataRaw from './dailyPuzzles.json';
-import * as comparativePuzzlesDataRaw from './comparativePuzzles.json';
-import * as singleSequencePuzzlesDataRaw from './singleSequencePuzzles.json';
+// Use direct imports with the help of the *.json module declaration
+import puzzlesData from './puzzles.json';
+import dailyPuzzlesData from './dailyPuzzles.json';
+import comparativePuzzlesData from './comparativePuzzles.json';
+import singleSequencePuzzlesData from './singleSequencePuzzles.json';
 import { Puzzle, Row, Item, ComparativePuzzle, SingleSequencePuzzle, SingleSequenceItem, SurveyQuestion, SurveyResponse, SurveyResult } from '../types/game';
 import { saveSurveyResponseToFirebase, getSurveyResponsesFromFirebase } from '../services/firebaseService';
-
-// Use type assertions to work with the imported JSON data
-const puzzlesData = puzzlesDataRaw as any;
-const dailyPuzzlesData = dailyPuzzlesDataRaw as any;
-const comparativePuzzlesData = comparativePuzzlesDataRaw as any;
-const singleSequencePuzzlesData = singleSequencePuzzlesDataRaw as any;
 
 interface PuzzleRowItem {
   id: string;

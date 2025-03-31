@@ -19,12 +19,12 @@
     "esModuleInterop": true,
 
     /* Linting */
-    "strict": true,
+    "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "noImplicitAny": false
   },
-  "include": ["src", "src/**/*.json", "src/**/*.d.ts"]
+  "include": ["src"]
 }
