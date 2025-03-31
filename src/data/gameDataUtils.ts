@@ -3,6 +3,7 @@ import dailyPuzzlesData from './dailyPuzzles.json';
 import comparativePuzzlesData from './comparativePuzzles.json';
 import singleSequencePuzzlesData from './singleSequencePuzzles.json';
 import { Puzzle, Row, Item, ComparativePuzzle, SingleSequencePuzzle, SingleSequenceItem, SurveyQuestion, SurveyResponse, SurveyResult } from '../types/game';
+import { saveSurveyResponseToFirebase, getSurveyResponsesFromFirebase } from '../services/firebaseService';
 
 interface PuzzleRowItem {
   id: string;
@@ -264,43 +265,43 @@ export const getRandomSingleSequencePuzzle = (): SingleSequencePuzzle | null => 
 const surveyQuestions: SurveyQuestion[] = [
   {
     id: 'q1',
-    date: '2023-08-01',
+    date: '2025-03-31',
     question: 'How many sandwiches do you make per year?',
     unit: 'sandwiches'
   },
   {
     id: 'q2',
-    date: '2023-08-02',
+    date: '2025-04-01',
     question: 'How many hours do you spend on social media per week?',
     unit: 'hours'
   },
   {
     id: 'q3',
-    date: '2023-08-03',
+    date: '2025-04-02',
     question: 'How many books do you read in a year?',
     unit: 'books'
   },
   {
     id: 'q4',
-    date: '2023-08-04',
+    date: '2025-04-03',
     question: 'How many times do you check your phone in a day?',
     unit: 'times'
   },
   {
     id: 'q5',
-    date: '2023-08-05',
+    date: '2025-04-04',
     question: 'How many cups of coffee/tea do you drink per week?',
     unit: 'cups'
   },
   {
     id: 'q6',
-    date: '2023-08-06',
+    date: '2025-04-05',
     question: 'How many minutes do you spend commuting each day?',
     unit: 'minutes'
   },
   {
     id: 'q7',
-    date: '2023-08-07',
+    date: '2025-04-06',
     question: 'How many streaming services do you subscribe to?',
     unit: 'services'
   }
@@ -348,8 +349,23 @@ export const getYesterdaySurveyQuestion = (): SurveyQuestion | null => {
   return question;
 };
 
-// Save a survey response to localStorage
-export const saveSurveyResponse = (response: SurveyResponse): void => {
+// Save a survey response - save to both Firebase and localStorage
+export const saveSurveyResponse = async (response: SurveyResponse): Promise<void> => {
+  // First, try to save to Firebase
+  try {
+    await saveSurveyResponseToFirebase(response);
+  } catch (error) {
+    console.error("Error saving to Firebase, falling back to localStorage", error);
+    // If Firebase fails, fall back to localStorage
+    saveToLocalStorage(response);
+  }
+  
+  // Always save the submission flag locally
+  localStorage.setItem('lastSurveySubmitDate', new Date().toISOString().split('T')[0]);
+};
+
+// Helper function to save to localStorage (used as fallback)
+const saveToLocalStorage = (response: SurveyResponse): void => {
   const storageKey = `surveyResponses_${response.date}_${response.questionId}`;
   
   // Get existing responses
@@ -364,7 +380,26 @@ export const saveSurveyResponse = (response: SurveyResponse): void => {
 };
 
 // Get survey responses for a specific date and question
-export const getSurveyResponses = (date: string, questionId: string): SurveyResponse[] => {
+export const getSurveyResponses = async (date: string, questionId: string): Promise<SurveyResponse[]> => {
+  try {
+    // First try to get from Firebase
+    const firebaseResponses = await getSurveyResponsesFromFirebase(date, questionId);
+    
+    if (firebaseResponses.length > 0) {
+      return firebaseResponses;
+    }
+    
+    // If no Firebase responses, fall back to localStorage
+    console.log("No responses found in Firebase, checking localStorage");
+    return getFromLocalStorage(date, questionId);
+  } catch (error) {
+    console.error("Error getting responses from Firebase, falling back to localStorage", error);
+    return getFromLocalStorage(date, questionId);
+  }
+};
+
+// Helper function to get from localStorage (used as fallback)
+const getFromLocalStorage = (date: string, questionId: string): SurveyResponse[] => {
   const storageKey = `surveyResponses_${date}_${questionId}`;
   
   const responsesJSON = localStorage.getItem(storageKey);
@@ -374,11 +409,11 @@ export const getSurveyResponses = (date: string, questionId: string): SurveyResp
 };
 
 // Get yesterday's survey results
-export const getYesterdaySurveyResults = (): SurveyResult | null => {
+export const getYesterdaySurveyResults = async (): Promise<SurveyResult | null> => {
   const yesterdayQuestion = getYesterdaySurveyQuestion();
   if (!yesterdayQuestion) return null;
   
-  const responses = getSurveyResponses(yesterdayQuestion.date, yesterdayQuestion.id);
+  const responses = await getSurveyResponses(yesterdayQuestion.date, yesterdayQuestion.id);
   
   return {
     question: yesterdayQuestion,

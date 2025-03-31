@@ -9,20 +9,38 @@ const SurveyGame: React.FC = () => {
   const [answer, setAnswer] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   
   useEffect(() => {
     // Load current question and yesterday's results
-    setCurrentQuestion(getCurrentSurveyQuestion());
-    setYesterdayResults(getYesterdaySurveyResults());
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        // Load current question
+        setCurrentQuestion(getCurrentSurveyQuestion());
+        
+        // Load yesterday's results (async)
+        const results = await getYesterdaySurveyResults();
+        setYesterdayResults(results);
+        
+        // Check if the user has already submitted a response today
+        const lastSubmitDateStr = localStorage.getItem('lastSurveySubmitDate');
+        if (lastSubmitDateStr === new Date().toISOString().split('T')[0]) {
+          setSubmitted(true);
+        }
+      } catch (error) {
+        console.error("Error loading survey data:", error);
+        setError("There was a problem loading the survey data. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    // Check if the user has already submitted a response today
-    const lastSubmitDateStr = localStorage.getItem('lastSurveySubmitDate');
-    if (lastSubmitDateStr === new Date().toISOString().split('T')[0]) {
-      setSubmitted(true);
-    }
+    loadData();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name.trim()) {
@@ -43,27 +61,44 @@ const SurveyGame: React.FC = () => {
     
     if (!currentQuestion) return;
     
-    // Save the response
-    const response: SurveyResponse = {
-      questionId: currentQuestion.id,
-      date: currentQuestion.date,
-      name: name.trim(),
-      answer: numericAnswer,
-      timestamp: new Date().toISOString()
-    };
-    
-    saveSurveyResponse(response);
-    
-    // Mark as submitted for today
-    localStorage.setItem('lastSurveySubmitDate', new Date().toISOString().split('T')[0]);
-    
-    setSubmitted(true);
+    setIsSaving(true);
     setError(null);
+    
+    try {
+      // Save the response (now async)
+      const response: SurveyResponse = {
+        questionId: currentQuestion.id,
+        date: currentQuestion.date,
+        name: name.trim(),
+        answer: numericAnswer,
+        timestamp: new Date().toISOString()
+      };
+      
+      await saveSurveyResponse(response);
+      
+      // Mark as submitted for today
+      localStorage.setItem('lastSurveySubmitDate', new Date().toISOString().split('T')[0]);
+      
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting response:", error);
+      setError("There was a problem saving your response. Please try again later.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Sort responses from lowest to highest
   const sortedResponses = yesterdayResults?.responses.slice() || [];
   sortedResponses.sort((a, b) => a.answer - b.answer);
+
+  if (isLoading) {
+    return (
+      <div style={{ width: '100%', maxWidth: '32rem', margin: '0 auto', textAlign: 'center', padding: '2rem' }}>
+        <p>Loading survey data...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: '100%', maxWidth: '32rem', margin: '0 auto' }}>
@@ -171,6 +206,7 @@ const SurveyGame: React.FC = () => {
                     color: 'white'
                   }}
                   placeholder="Enter your name"
+                  disabled={isSaving}
                 />
               </div>
               
@@ -198,6 +234,7 @@ const SurveyGame: React.FC = () => {
                     placeholder="Enter a number"
                     min="0"
                     step="any"
+                    disabled={isSaving}
                   />
                   {currentQuestion.unit && (
                     <span style={{ marginLeft: '0.5rem' }}>{currentQuestion.unit}</span>
@@ -227,10 +264,12 @@ const SurveyGame: React.FC = () => {
                   borderRadius: '0.375rem',
                   border: 'none',
                   fontWeight: '500',
-                  cursor: 'pointer'
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  opacity: isSaving ? 0.7 : 1
                 }}
+                disabled={isSaving}
               >
-                Submit Answer
+                {isSaving ? 'Submitting...' : 'Submit Answer'}
               </button>
             </form>
           ) : (
