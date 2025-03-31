@@ -4,9 +4,10 @@ import { Puzzle, ComparativePuzzle, SingleSequencePuzzle } from './types/game';
 import ComparativeGame from './components/ComparativeGame';
 import { Game } from './components/Game';
 import SingleSequenceGame from './components/SingleSequenceGame';
+import SurveyGame from './components/SurveyGame';
 
 // Define game modes
-type GameMode = 'grid' | 'comparative' | 'sequence';
+type GameMode = 'grid' | 'comparative' | 'sequence' | 'survey';
 
 function App() {
   // State for puzzle date and game mode
@@ -120,6 +121,16 @@ function App() {
             </p>
           </button>
         )}
+
+        <button
+          onClick={() => selectGameMode('survey')}
+          className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
+        >
+          <h3 className="text-xl font-bold mb-2">Daily Survey</h3>
+          <p className="text-sm opacity-80">
+            Answer today's numerical question and see how others answered yesterday's question
+          </p>
+        </button>
       </div>
     </div>
   );
@@ -182,6 +193,8 @@ function App() {
             />
           ) : gameMode === 'sequence' && sequencePuzzle ? (
             <SingleSequenceGame puzzle={sequencePuzzle} />
+          ) : gameMode === 'survey' ? (
+            <SurveyGame />
           ) : (
             <div className="w-full max-w-lg mx-auto text-center p-6 bg-indigo-800 rounded-lg">
               <h3 className="text-xl font-bold mb-4">No Puzzle Available</h3>

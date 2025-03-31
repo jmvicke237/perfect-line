@@ -55,4 +55,24 @@ export interface GameState {
   userOrder: Record<string, string[]>;
   isSubmitted: boolean;
   results: Record<string, boolean[]>;
+}
+
+export interface SurveyQuestion {
+  id: string;
+  date: string;
+  question: string;
+  unit?: string;
+}
+
+export interface SurveyResponse {
+  questionId: string;
+  date: string;
+  name: string;
+  answer: number;
+  timestamp: string;
+}
+
+export interface SurveyResult {
+  question: SurveyQuestion;
+  responses: SurveyResponse[];
 } 

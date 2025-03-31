@@ -2,7 +2,7 @@ import puzzlesData from './puzzles.json';
 import dailyPuzzlesData from './dailyPuzzles.json';
 import comparativePuzzlesData from './comparativePuzzles.json';
 import singleSequencePuzzlesData from './singleSequencePuzzles.json';
-import { Puzzle, Row, Item, ComparativePuzzle, SingleSequencePuzzle, SingleSequenceItem } from '../types/game';
+import { Puzzle, Row, Item, ComparativePuzzle, SingleSequencePuzzle, SingleSequenceItem, SurveyQuestion, SurveyResponse, SurveyResult } from '../types/game';
 
 interface PuzzleRowItem {
   id: string;
@@ -256,4 +256,132 @@ export const getRandomSingleSequencePuzzle = (): SingleSequencePuzzle | null => 
   const randomPuzzleId = puzzles[randomIndex].id;
   
   return createPlayableSingleSequencePuzzle(randomPuzzleId);
+};
+
+// Survey Game Mode Utilities
+
+// Sample survey questions - in a real app, these would come from a server
+const surveyQuestions: SurveyQuestion[] = [
+  {
+    id: 'q1',
+    date: '2023-08-01',
+    question: 'How many sandwiches do you make per year?',
+    unit: 'sandwiches'
+  },
+  {
+    id: 'q2',
+    date: '2023-08-02',
+    question: 'How many hours do you spend on social media per week?',
+    unit: 'hours'
+  },
+  {
+    id: 'q3',
+    date: '2023-08-03',
+    question: 'How many books do you read in a year?',
+    unit: 'books'
+  },
+  {
+    id: 'q4',
+    date: '2023-08-04',
+    question: 'How many times do you check your phone in a day?',
+    unit: 'times'
+  },
+  {
+    id: 'q5',
+    date: '2023-08-05',
+    question: 'How many cups of coffee/tea do you drink per week?',
+    unit: 'cups'
+  },
+  {
+    id: 'q6',
+    date: '2023-08-06',
+    question: 'How many minutes do you spend commuting each day?',
+    unit: 'minutes'
+  },
+  {
+    id: 'q7',
+    date: '2023-08-07',
+    question: 'How many streaming services do you subscribe to?',
+    unit: 'services'
+  }
+];
+
+// Get today's date in YYYY-MM-DD format
+const getTodayDate = (): string => {
+  return new Date().toISOString().split('T')[0];
+};
+
+// Get yesterday's date in YYYY-MM-DD format
+const getYesterdayDate = (): string => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return yesterday.toISOString().split('T')[0];
+};
+
+// Get the current survey question based on the date
+export const getCurrentSurveyQuestion = (): SurveyQuestion => {
+  const today = getTodayDate();
+  
+  // For demo purposes, we'll select a question based on the day of month (modulo questions length)
+  const dayOfMonth = new Date().getDate();
+  const questionIndex = (dayOfMonth - 1) % surveyQuestions.length;
+  
+  const question = { ...surveyQuestions[questionIndex] };
+  question.date = today;
+  
+  return question;
+};
+
+// Get yesterday's survey question
+export const getYesterdaySurveyQuestion = (): SurveyQuestion | null => {
+  const yesterday = getYesterdayDate();
+  
+  // For demo purposes, we'll select a question based on yesterday's day of month (modulo questions length)
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const dayOfMonth = yesterdayDate.getDate();
+  const questionIndex = (dayOfMonth - 1) % surveyQuestions.length;
+  
+  const question = { ...surveyQuestions[questionIndex] };
+  question.date = yesterday;
+  
+  return question;
+};
+
+// Save a survey response to localStorage
+export const saveSurveyResponse = (response: SurveyResponse): void => {
+  const storageKey = `surveyResponses_${response.date}_${response.questionId}`;
+  
+  // Get existing responses
+  const existingResponsesJSON = localStorage.getItem(storageKey);
+  let responses: SurveyResponse[] = existingResponsesJSON ? JSON.parse(existingResponsesJSON) : [];
+  
+  // Add the new response
+  responses.push(response);
+  
+  // Save back to localStorage
+  localStorage.setItem(storageKey, JSON.stringify(responses));
+};
+
+// Get survey responses for a specific date and question
+export const getSurveyResponses = (date: string, questionId: string): SurveyResponse[] => {
+  const storageKey = `surveyResponses_${date}_${questionId}`;
+  
+  const responsesJSON = localStorage.getItem(storageKey);
+  if (!responsesJSON) return [];
+  
+  return JSON.parse(responsesJSON);
+};
+
+// Get yesterday's survey results
+export const getYesterdaySurveyResults = (): SurveyResult | null => {
+  const yesterdayQuestion = getYesterdaySurveyQuestion();
+  if (!yesterdayQuestion) return null;
+  
+  const responses = getSurveyResponses(yesterdayQuestion.date, yesterdayQuestion.id);
+  
+  return {
+    question: yesterdayQuestion,
+    responses
+  };
 }; 
