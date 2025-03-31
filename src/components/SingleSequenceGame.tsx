@@ -94,23 +94,85 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
   const handleSubmit = () => {
     if (!gameState.currentPuzzle) return;
 
-    // Sort items by displayValue to determine correct order
+    // Get the correct numerical values in ascending order
     const correctOrderItems = [...gameState.currentPuzzle.items].sort((a, b) => {
       const valueA = typeof a.displayValue === 'string' ? parseFloat(a.displayValue) : a.displayValue;
       const valueB = typeof b.displayValue === 'string' ? parseFloat(b.displayValue) : b.displayValue;
       return Number(valueA) - Number(valueB);
     });
     
-    const correctOrder = correctOrderItems.map(item => item.id);
+    // Map item IDs to their correct indices for reference
+    const correctPositionMap = new Map<string, number>();
+    correctOrderItems.forEach((item, index) => {
+      correctPositionMap.set(item.id, index);
+    });
     
-    // Compare current order with correct order
-    const results = gameState.userOrder.map((itemId, index) => itemId === correctOrder[index]);
+    // Get the numerical values of the user's order
+    const userOrderValues = gameState.userOrder.map(itemId => {
+      const item = gameState.currentPuzzle!.items.find(i => i.id === itemId);
+      if (!item) return -1;
+      return typeof item.displayValue === 'string' ? parseFloat(item.displayValue) : Number(item.displayValue);
+    });
+    
+    // Convert user order to correct position indices
+    const userOrderPositions = gameState.userOrder.map(itemId => {
+      return correctPositionMap.get(itemId) ?? -1;
+    });
+    
+    // Find the longest increasing subsequence of positions
+    const lis = findLongestIncreasingSubsequence(userOrderPositions);
+    
+    // Mark items as correct if they're in the LIS
+    const results = Array(gameState.userOrder.length).fill(false);
+    lis.forEach(index => {
+      results[index] = true;
+    });
     
     setGameState(prev => ({
       ...prev,
       isSubmitted: true,
       results,
     }));
+  };
+
+  // Function to find the longest increasing subsequence (indices in the original array)
+  const findLongestIncreasingSubsequence = (arr: number[]): number[] => {
+    if (arr.length === 0) return [];
+    
+    // lengths[i] = length of LIS ending at arr[i]
+    const lengths = Array(arr.length).fill(1);
+    
+    // prevIndices[i] = previous index in the LIS ending at arr[i]
+    const prevIndices = Array(arr.length).fill(-1);
+    
+    // Find the lengths of all LIS
+    for (let i = 1; i < arr.length; i++) {
+      for (let j = 0; j < i; j++) {
+        if (arr[j] < arr[i] && lengths[j] + 1 > lengths[i]) {
+          lengths[i] = lengths[j] + 1;
+          prevIndices[i] = j;
+        }
+      }
+    }
+    
+    // Find the index of the maximum length
+    let maxLengthIndex = 0;
+    for (let i = 1; i < arr.length; i++) {
+      if (lengths[i] > lengths[maxLengthIndex]) {
+        maxLengthIndex = i;
+      }
+    }
+    
+    // Reconstruct the LIS (indices in the original array)
+    const result: number[] = [];
+    let currentIndex = maxLengthIndex;
+    
+    while (currentIndex !== -1) {
+      result.unshift(currentIndex); // Add to the front
+      currentIndex = prevIndices[currentIndex];
+    }
+    
+    return result;
   };
 
   const calculateScore = (): [number, number] => {
