@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { SingleSequencePuzzle, SingleSequenceItem, SingleSequenceGameState } from '../types/game';
+import { SingleSequencePuzzle, SingleSequenceGameState } from '../types/game';
 
 interface SingleSequenceGameProps {
   puzzle: SingleSequencePuzzle;
