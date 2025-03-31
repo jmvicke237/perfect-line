@@ -107,13 +107,6 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
       correctPositionMap.set(item.id, index);
     });
     
-    // Get the numerical values of the user's order
-    const userOrderValues = gameState.userOrder.map(itemId => {
-      const item = gameState.currentPuzzle!.items.find(i => i.id === itemId);
-      if (!item) return -1;
-      return typeof item.displayValue === 'string' ? parseFloat(item.displayValue) : Number(item.displayValue);
-    });
-    
     // Convert user order to correct position indices
     const userOrderPositions = gameState.userOrder.map(itemId => {
       return correctPositionMap.get(itemId) ?? -1;
