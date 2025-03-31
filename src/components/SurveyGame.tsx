@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCurrentSurveyQuestion, getYesterdaySurveyQuestion, getYesterdaySurveyResults, saveSurveyResponse } from '../data/gameDataUtils';
+import { getCurrentSurveyQuestion, getYesterdaySurveyResults, saveSurveyResponse } from '../data/gameDataUtils';
 import { SurveyQuestion, SurveyResponse, SurveyResult } from '../types/game';
 
 const SurveyGame: React.FC = () => {
