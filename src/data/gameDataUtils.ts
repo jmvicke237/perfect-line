@@ -1,7 +1,8 @@
 import puzzlesData from './puzzles.json';
 import dailyPuzzlesData from './dailyPuzzles.json';
 import comparativePuzzlesData from './comparativePuzzles.json';
-import { Puzzle, Row, Item, ComparativePuzzle } from '../types/game';
+import singleSequencePuzzlesData from './singleSequencePuzzles.json';
+import { Puzzle, Row, Item, ComparativePuzzle, SingleSequencePuzzle, SingleSequenceItem } from '../types/game';
 
 interface PuzzleRowItem {
   id: string;
@@ -37,6 +38,24 @@ interface ComparativePuzzleDefinition {
   description: string;
   attribute: string;
   items: PuzzleRowItem[];
+}
+
+// Single Sequence Puzzle Utilities
+
+interface SingleSequencePuzzleItem {
+  shortText: string;
+  longText?: string;
+  displayValue: string | number;
+}
+
+interface SingleSequencePuzzleDefinition {
+  id: string;
+  prompt: string;
+  leftLabel: string;
+  rightLabel: string;
+  items: SingleSequencePuzzleItem[];
+  categories?: string[];
+  difficulty?: string;
 }
 
 // Get all available puzzles
@@ -190,4 +209,51 @@ export const getDailyComparativePuzzle = (dateString?: string): ComparativePuzzl
   }
   
   return puzzle;
+};
+
+// Get all single sequence puzzles
+export const getSingleSequencePuzzles = (): SingleSequencePuzzleDefinition[] => {
+  return singleSequencePuzzlesData.content as SingleSequencePuzzleDefinition[];
+};
+
+// Get a specific single sequence puzzle by ID
+export const getSingleSequencePuzzleById = (puzzleId: string): SingleSequencePuzzleDefinition | undefined => {
+  return (singleSequencePuzzlesData.content as SingleSequencePuzzleDefinition[]).find(puzzle => puzzle.id === puzzleId);
+};
+
+// Create a playable single sequence puzzle
+export const createPlayableSingleSequencePuzzle = (puzzleId: string): SingleSequencePuzzle | null => {
+  const puzzleDef = getSingleSequencePuzzleById(puzzleId);
+  if (!puzzleDef) return null;
+
+  // Create items with unique IDs
+  const items: SingleSequenceItem[] = puzzleDef.items.map((item, index) => {
+    return {
+      id: `item-${index}`,
+      shortText: item.shortText,
+      longText: item.longText,
+      displayValue: item.displayValue
+    };
+  });
+
+  return {
+    id: puzzleDef.id,
+    prompt: puzzleDef.prompt,
+    leftLabel: puzzleDef.leftLabel,
+    rightLabel: puzzleDef.rightLabel,
+    items,
+    categories: puzzleDef.categories,
+    difficulty: puzzleDef.difficulty
+  };
+};
+
+// Get a random single sequence puzzle
+export const getRandomSingleSequencePuzzle = (): SingleSequencePuzzle | null => {
+  const puzzles = getSingleSequencePuzzles();
+  if (puzzles.length === 0) return null;
+  
+  const randomIndex = Math.floor(Math.random() * puzzles.length);
+  const randomPuzzleId = puzzles[randomIndex].id;
+  
+  return createPlayableSingleSequencePuzzle(randomPuzzleId);
 }; 

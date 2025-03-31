@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById, getDailyComparativePuzzle } from './data/gameDataUtils';
-import { Puzzle, ComparativePuzzle } from './types/game';
+import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById, getDailyComparativePuzzle, getRandomSingleSequencePuzzle } from './data/gameDataUtils';
+import { Puzzle, ComparativePuzzle, SingleSequencePuzzle } from './types/game';
 import ComparativeGame from './components/ComparativeGame';
 import { Game } from './components/Game';
+import SingleSequenceGame from './components/SingleSequenceGame';
 
 // Define game modes
-type GameMode = 'grid' | 'comparative';
+type GameMode = 'grid' | 'comparative' | 'sequence';
 
 function App() {
   // State for puzzle date and game mode
@@ -20,6 +21,9 @@ function App() {
   
   // For comparative game mode
   const [comparativePuzzle, setComparativePuzzle] = useState<ComparativePuzzle | null>(null);
+  
+  // For sequence game mode
+  const [sequencePuzzle, setSequencePuzzle] = useState<SingleSequencePuzzle | null>(null);
   
   // Load puzzle on initial render
   useEffect(() => {
@@ -39,6 +43,10 @@ function App() {
     // Load comparative puzzle for the selected date
     const newComparativePuzzle = getDailyComparativePuzzle(puzzleDate);
     setComparativePuzzle(newComparativePuzzle);
+    
+    // Load a random sequence puzzle
+    const newSequencePuzzle = getRandomSingleSequencePuzzle();
+    setSequencePuzzle(newSequencePuzzle);
     
     // Update title and description
     const dailyPuzzleInfo = getDailyPuzzleForDate(puzzleDate);
@@ -100,6 +108,18 @@ function App() {
             </p>
           </button>
         )}
+        
+        {sequencePuzzle && (
+          <button
+            onClick={() => selectGameMode('sequence')}
+            className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
+          >
+            <h3 className="text-xl font-bold mb-2">Sequence Mode</h3>
+            <p className="text-sm opacity-80">
+              Arrange items in the correct sequence from lowest to highest value
+            </p>
+          </button>
+        )}
       </div>
     </div>
   );
@@ -152,7 +172,7 @@ function App() {
             renderModeSelection()
           ) : gameMode === 'grid' ? (
             <Game puzzle={puzzle} />
-          ) : comparativePuzzle ? (
+          ) : gameMode === 'comparative' && comparativePuzzle ? (
             <ComparativeGame 
               items={comparativePuzzle.items}
               maxRounds={6}
@@ -160,10 +180,12 @@ function App() {
               description={`Select the item with the HIGHER ${comparativePuzzle.attribute}`}
               attribute={comparativePuzzle.attribute}
             />
+          ) : gameMode === 'sequence' && sequencePuzzle ? (
+            <SingleSequenceGame puzzle={sequencePuzzle} />
           ) : (
             <div className="w-full max-w-lg mx-auto text-center p-6 bg-indigo-800 rounded-lg">
-              <h3 className="text-xl font-bold mb-4">No Comparative Puzzle Available</h3>
-              <p className="mb-4">There is no Higher/Lower puzzle available for this date.</p>
+              <h3 className="text-xl font-bold mb-4">No Puzzle Available</h3>
+              <p className="mb-4">There is no puzzle available for the selected mode and date.</p>
               <button
                 onClick={() => setShowModeSelect(true)}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium"

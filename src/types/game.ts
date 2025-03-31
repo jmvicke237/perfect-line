@@ -26,6 +26,30 @@ export interface ComparativePuzzle {
   items: Item[];
 }
 
+export interface SingleSequenceItem {
+  id: string;
+  shortText: string;
+  longText?: string;
+  displayValue: string | number;
+}
+
+export interface SingleSequencePuzzle {
+  id: string;
+  prompt: string;
+  leftLabel: string;
+  rightLabel: string;
+  items: SingleSequenceItem[];
+  categories?: string[];
+  difficulty?: string;
+}
+
+export interface SingleSequenceGameState {
+  currentPuzzle: SingleSequencePuzzle | null;
+  userOrder: string[];
+  isSubmitted: boolean;
+  results: boolean[];
+}
+
 export interface GameState {
   currentPuzzle: Puzzle | null;
   userOrder: Record<string, string[]>;
