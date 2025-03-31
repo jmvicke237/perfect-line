@@ -184,8 +184,9 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
     
     const [correct, total] = calculateScore();
     const emojiLine = gameState.results.map(result => result ? '🟩' : '🟥').join('');
+    const prompt = gameState.currentPuzzle?.prompt || 'Sequence Game';
 
-    return `Perfect Line: Sequence Mode ${correct}/${total}\n\n${emojiLine}\n\nPlay at: https://justinvickers.github.io/perfect-line/`;
+    return `Perfect Line: ${prompt}\nScore: ${correct}/${total}\n\n${emojiLine}\n\nPlay at: https://justinvickers.github.io/perfect-line/`;
   };
 
   const handleShare = () => {
@@ -252,13 +253,13 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
         <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.75rem' }}>
           {gameState.currentPuzzle.prompt}
         </h2>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-          <div>{gameState.currentPuzzle.leftLabel}</div>
-          <div>{gameState.currentPuzzle.rightLabel}</div>
-        </div>
       </div>
       
       <div style={{ marginBottom: '1rem' }}>
+        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: '500' }}>
+          {gameState.currentPuzzle.leftLabel}
+        </div>
+        
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={gameState.userOrder}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem' }}>
@@ -281,6 +282,10 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
             </div>
           </SortableContext>
         </DndContext>
+        
+        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginTop: '0.5rem', fontWeight: '500' }}>
+          {gameState.currentPuzzle.rightLabel}
+        </div>
       </div>
 
       <div>
