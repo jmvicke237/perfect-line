@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, getDocs, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 import { SurveyResponse } from '../types/game';
 import { firebaseConfig } from '../firebaseConfig';
@@ -36,7 +36,7 @@ export const getSurveyResponsesFromFirebase = async (date: string, questionId: s
     const querySnapshot = await getDocs(q);
     const responses: SurveyResponse[] = [];
     
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
       responses.push(doc.data() as SurveyResponse);
     });
     
