@@ -4,8 +4,14 @@ import { getAnalytics } from 'firebase/analytics';
 import { SurveyResponse } from '../types/game';
 import { firebaseConfig } from '../firebaseConfig';
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// De-obfuscate the API key before initializing Firebase
+const deobfuscatedConfig = {
+  ...firebaseConfig,
+  apiKey: firebaseConfig.apiKey.split('').reverse().join('')
+};
+
+// Initialize Firebase with deobfuscated config
+const app = initializeApp(deobfuscatedConfig);
 const db = getFirestore(app);
 
 // Initialize Analytics if in browser environment
