@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCurrentSurveyQuestion, getYesterdaySurveyResults, saveSurveyResponse } from '../data/gameDataUtils';
+import { getCurrentSurveyQuestion, getYesterdaySurveyQuestion, getYesterdaySurveyResults, saveSurveyResponse, getSurveyResponses } from '../data/gameDataUtils';
 import { SurveyQuestion, SurveyResponse, SurveyResult } from '../types/game';
 
 const SurveyGame: React.FC = () => {
@@ -9,7 +9,12 @@ const SurveyGame: React.FC = () => {
   const [answer, setAnswer] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
+  
+  // Test mode states
+  const [isTestMode, setIsTestMode] = useState<boolean>(false);
+  const [testName, setTestName] = useState<string>('');
+  const [testAnswer, setTestAnswer] = useState<string>('');
+  
   useEffect(() => {
     // Load current question and yesterday's results
     setCurrentQuestion(getCurrentSurveyQuestion());
@@ -60,6 +65,58 @@ const SurveyGame: React.FC = () => {
     setSubmitted(true);
     setError(null);
   };
+  
+  // Handle adding a test response to yesterday's question
+  const handleAddTestResponse = () => {
+    if (!testName.trim()) {
+      setError('Please enter a test name');
+      return;
+    }
+    
+    if (!testAnswer.trim()) {
+      setError('Please enter a test answer');
+      return;
+    }
+    
+    const numericAnswer = parseFloat(testAnswer);
+    if (isNaN(numericAnswer) || numericAnswer < 0) {
+      setError('Please enter a valid positive number');
+      return;
+    }
+    
+    const yesterdayQuestion = getYesterdaySurveyQuestion();
+    if (!yesterdayQuestion) return;
+    
+    // Create a test response for yesterday
+    const testResponse: SurveyResponse = {
+      questionId: yesterdayQuestion.id,
+      date: yesterdayQuestion.date,
+      name: testName.trim(),
+      answer: numericAnswer,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Save the test response
+    saveSurveyResponse(testResponse);
+    
+    // Refresh the results
+    const responses = getSurveyResponses(yesterdayQuestion.date, yesterdayQuestion.id);
+    setYesterdayResults({
+      question: yesterdayQuestion,
+      responses
+    });
+    
+    // Clear test inputs
+    setTestName('');
+    setTestAnswer('');
+    setError(null);
+  };
+  
+  // Reset today's submission status (for testing)
+  const handleResetSubmission = () => {
+    localStorage.removeItem('lastSurveySubmitDate');
+    setSubmitted(false);
+  };
 
   // Sort responses from lowest to highest
   const sortedResponses = yesterdayResults?.responses.slice() || [];
@@ -74,10 +131,111 @@ const SurveyGame: React.FC = () => {
         <p style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '1rem' }}>
           Answer today's question and see yesterday's results!
         </p>
+        <button
+          onClick={() => setIsTestMode(!isTestMode)}
+          style={{
+            padding: '0.25rem 0.5rem',
+            backgroundColor: '#4f46e5',
+            borderRadius: '0.25rem',
+            fontSize: '0.75rem',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          {isTestMode ? 'Exit Test Mode' : 'Enter Test Mode'}
+        </button>
       </div>
       
+      {/* Test Mode Controls */}
+      {isTestMode && (
+        <div style={{ 
+          marginBottom: '2rem', 
+          padding: '1rem', 
+          backgroundColor: 'rgba(220, 38, 38, 0.3)', 
+          borderRadius: '0.5rem',
+          border: '1px dashed rgba(220, 38, 38, 0.5)'
+        }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '0.75rem', textAlign: 'center' }}>
+            Test Mode
+          </h3>
+          
+          <div style={{ marginBottom: '1rem' }}>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+              Add test response to yesterday's question:
+            </h4>
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <input
+                type="text"
+                value={testName}
+                onChange={(e) => setTestName(e.target.value)}
+                placeholder="Test Name"
+                style={{ 
+                  flex: 1,
+                  padding: '0.5rem',
+                  backgroundColor: 'rgba(30, 27, 75, 0.5)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '0.25rem',
+                  color: 'white',
+                  fontSize: '0.875rem'
+                }}
+              />
+              <input
+                type="number"
+                value={testAnswer}
+                onChange={(e) => setTestAnswer(e.target.value)}
+                placeholder="Answer"
+                min="0"
+                step="any"
+                style={{ 
+                  width: '25%',
+                  padding: '0.5rem',
+                  backgroundColor: 'rgba(30, 27, 75, 0.5)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '0.25rem',
+                  color: 'white',
+                  fontSize: '0.875rem'
+                }}
+              />
+              <button
+                onClick={handleAddTestResponse}
+                style={{
+                  padding: '0.5rem',
+                  backgroundColor: '#4f46e5',
+                  color: 'white',
+                  borderRadius: '0.25rem',
+                  border: 'none',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem'
+                }}
+              >
+                Add
+              </button>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <button
+              onClick={handleResetSubmission}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#4f46e5',
+                color: 'white',
+                borderRadius: '0.25rem',
+                border: 'none',
+                fontWeight: '500',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              Reset Today's Submission
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Yesterday's Results */}
-      {yesterdayResults && yesterdayResults.responses.length > 0 && (
+      {yesterdayResults && (
         <div style={{ 
           marginBottom: '2rem', 
           padding: '1rem', 
@@ -95,28 +253,41 @@ const SurveyGame: React.FC = () => {
             <h4 style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '0.5rem', textAlign: 'center' }}>
               Results (Lowest to Highest):
             </h4>
-            <div style={{ 
-              backgroundColor: 'rgba(30, 27, 75, 0.5)', 
-              borderRadius: '0.375rem', 
-              padding: '0.75rem' 
-            }}>
-              {sortedResponses.map((response, index) => (
-                <div 
-                  key={index} 
-                  style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    padding: '0.5rem',
-                    borderBottom: index < sortedResponses.length - 1 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
-                  }}
-                >
-                  <div style={{ fontWeight: '500' }}>{response.name}</div>
-                  <div>
-                    {response.answer} {yesterdayResults.question.unit}
+            {sortedResponses.length > 0 ? (
+              <div style={{ 
+                backgroundColor: 'rgba(30, 27, 75, 0.5)', 
+                borderRadius: '0.375rem', 
+                padding: '0.75rem' 
+              }}>
+                {sortedResponses.map((response, index) => (
+                  <div 
+                    key={index} 
+                    style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      padding: '0.5rem',
+                      borderBottom: index < sortedResponses.length - 1 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+                    }}
+                  >
+                    <div style={{ fontWeight: '500' }}>{response.name}</div>
+                    <div>
+                      {response.answer} {yesterdayResults.question.unit}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '0.75rem', 
+                backgroundColor: 'rgba(30, 27, 75, 0.5)', 
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem',
+                opacity: '0.8'
+              }}>
+                No responses yet. {isTestMode && 'Use test mode to add some!'}
+              </div>
+            )}
           </div>
         </div>
       )}
