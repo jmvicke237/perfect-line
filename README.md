@@ -109,3 +109,41 @@ npm run dev
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Firebase Configuration
+
+This project uses Firebase for storing and retrieving survey data. To set up Firebase:
+
+1. Copy the `.env.example` file to `.env`
+2. Add your Firebase project credentials to the `.env` file
+
+### For Local Development
+
+Create a `.env` file with your Firebase configuration:
+
+```
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
+
+### For Production Deployment
+
+The production deployment uses GitHub Actions and GitHub Secrets to securely handle Firebase credentials:
+
+1. Go to your GitHub repository Settings
+2. Navigate to Secrets and Variables > Actions
+3. Add each Firebase configuration value as a separate repository secret:
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_STORAGE_BUCKET`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+   - `VITE_FIREBASE_APP_ID`
+   - `VITE_FIREBASE_MEASUREMENT_ID`
+
+The GitHub Actions workflow will use these secrets to create a secure `.env` file during the build process.
