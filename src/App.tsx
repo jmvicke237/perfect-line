@@ -1,25 +1,18 @@
 import { useState, useEffect } from 'react';
-import { getDailyPuzzle, getDailyPuzzleForDate, getPuzzleById, getDailyComparativePuzzle, getRandomSingleSequencePuzzle } from './data/gameDataUtils';
-import { Puzzle, ComparativePuzzle, SingleSequencePuzzle } from './types/game';
+import { getDailyComparativePuzzle, getDailySequencePuzzle, getCurrentSurveyQuestion } from './data/gameDataUtilsNew';
+import { ComparativePuzzle, SingleSequencePuzzle } from './types/game';
 import ComparativeGame from './components/ComparativeGame';
-import { Game } from './components/Game';
 import SingleSequenceGame from './components/SingleSequenceGame';
 import SurveyGame from './components/SurveyGame';
 
 // Define game modes
-type GameMode = 'grid' | 'comparative' | 'sequence' | 'survey';
-
-// This flag controls whether grid mode is available to users
-const GRID_MODE_ENABLED = false;
+type GameMode = 'comparative' | 'sequence' | 'survey';
 
 function App() {
   // State for puzzle date and game mode
   const [puzzleDate, setPuzzleDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [gameMode, setGameMode] = useState<GameMode>('survey'); // Default to survey mode since grid is disabled
+  const [gameMode, setGameMode] = useState<GameMode>('survey'); // Default to survey mode
   const [showModeSelect, setShowModeSelect] = useState<boolean>(true);
-  
-  // Initialize puzzle state
-  const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   
   // For comparative game mode
   const [comparativePuzzle, setComparativePuzzle] = useState<ComparativePuzzle | null>(null);
@@ -37,18 +30,14 @@ function App() {
     loadDailyPuzzle();
   }, [puzzleDate]);
 
-  // Load puzzle for the selected date
+  // Load puzzles for the selected date
   const loadDailyPuzzle = () => {
-    // Load the daily puzzle for the selected date
-    const newPuzzle = getDailyPuzzle(puzzleDate);
-    setPuzzle(newPuzzle);
-    
     // Load comparative puzzle for the selected date
     const newComparativePuzzle = getDailyComparativePuzzle(puzzleDate);
     setComparativePuzzle(newComparativePuzzle);
     
-    // Load a random sequence puzzle
-    const newSequencePuzzle = getRandomSingleSequencePuzzle();
+    // Load a sequence puzzle for the selected date
+    const newSequencePuzzle = getDailySequencePuzzle(puzzleDate);
     setSequencePuzzle(newSequencePuzzle);
     
     // Reset to show mode selection when loading a new puzzle
@@ -69,19 +58,6 @@ function App() {
     <div className="w-full max-w-lg mx-auto bg-indigo-900 p-6 rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Select Game Mode</h2>
       <div className="flex flex-col gap-4">
-        {/* Grid Mode - Only shown if enabled */}
-        {GRID_MODE_ENABLED && (
-          <button
-            onClick={() => selectGameMode('grid')}
-            className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
-          >
-            <h3 className="text-xl font-bold mb-2">Grid Mode</h3>
-            <p className="text-sm opacity-80">
-              Arrange items in the correct order within each row
-            </p>
-          </button>
-        )}
-        
         {/* Always show the comparative mode, but disable if there's no puzzle for it */}
         <button
           onClick={() => comparativePuzzle && selectGameMode('comparative')}
@@ -158,37 +134,31 @@ function App() {
         </div>
       </header>
 
-      {puzzle && (
-        <>
-          {showModeSelect ? (
-            renderModeSelection()
-          ) : gameMode === 'grid' ? (
-            <Game puzzle={puzzle} />
-          ) : gameMode === 'comparative' && comparativePuzzle ? (
-            <ComparativeGame 
-              items={comparativePuzzle.items}
-              maxRounds={6}
-              title={comparativePuzzle.name}
-              description={`Select the item with the HIGHER ${comparativePuzzle.attribute}`}
-              attribute={comparativePuzzle.attribute}
-            />
-          ) : gameMode === 'sequence' && sequencePuzzle ? (
-            <SingleSequenceGame puzzle={sequencePuzzle} />
-          ) : gameMode === 'survey' ? (
-            <SurveyGame />
-          ) : (
-            <div className="w-full max-w-lg mx-auto text-center p-6 bg-indigo-800 rounded-lg">
-              <h3 className="text-xl font-bold mb-4">No Puzzle Available</h3>
-              <p className="mb-4">There is no puzzle available for the selected mode and date.</p>
-              <button
-                onClick={() => setShowModeSelect(true)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium"
-              >
-                Choose Another Mode
-              </button>
-            </div>
-          )}
-        </>
+      {showModeSelect ? (
+        renderModeSelection()
+      ) : gameMode === 'comparative' && comparativePuzzle ? (
+        <ComparativeGame 
+          items={comparativePuzzle.items}
+          maxRounds={6}
+          title={comparativePuzzle.name}
+          description={`Select the item with the HIGHER ${comparativePuzzle.attribute}`}
+          attribute={comparativePuzzle.attribute}
+        />
+      ) : gameMode === 'sequence' && sequencePuzzle ? (
+        <SingleSequenceGame puzzle={sequencePuzzle} />
+      ) : gameMode === 'survey' ? (
+        <SurveyGame />
+      ) : (
+        <div className="w-full max-w-lg mx-auto text-center p-6 bg-indigo-800 rounded-lg">
+          <h3 className="text-xl font-bold mb-4">No Puzzle Available</h3>
+          <p className="mb-4">There is no puzzle available for the selected mode and date.</p>
+          <button
+            onClick={() => setShowModeSelect(true)}
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-medium"
+          >
+            Choose Another Mode
+          </button>
+        </div>
       )}
 
       {/* Debug info - only displayed during development */}
