@@ -196,10 +196,11 @@ export const getDailyComparativePuzzle = (dateString?: string): ComparativePuzzl
   // Find the daily puzzle definition for this date
   const dailyPuzzleDef = getDailyPuzzleForDate(targetDate);
   
-  // If no puzzle is defined for this date, return null
+  // If no puzzle is defined for this date or no comparative puzzle ID is specified, 
+  // return a random comparative puzzle as a fallback
   if (!dailyPuzzleDef || !dailyPuzzleDef.comparativePuzzleId) {
-    console.warn(`No comparative puzzle defined for date ${targetDate}`);
-    return null;
+    console.warn(`No comparative puzzle defined for date ${targetDate}, returning a random comparative puzzle instead.`);
+    return getRandomComparativePuzzle();
   }
   
   // Load the puzzle based on the ID in the daily puzzle definition
@@ -207,10 +208,21 @@ export const getDailyComparativePuzzle = (dateString?: string): ComparativePuzzl
   
   if (!puzzle) {
     console.error(`Failed to load comparative puzzle with ID ${dailyPuzzleDef.comparativePuzzleId} for date ${targetDate}`);
-    return null;
+    return getRandomComparativePuzzle();
   }
   
   return puzzle;
+};
+
+// Get a random comparative puzzle
+export const getRandomComparativePuzzle = (): ComparativePuzzle | null => {
+  const puzzles = getComparativePuzzles();
+  if (puzzles.length === 0) return null;
+  
+  const randomIndex = Math.floor(Math.random() * puzzles.length);
+  const randomPuzzleId = puzzles[randomIndex].id;
+  
+  return createPlayableComparativePuzzle(randomPuzzleId);
 };
 
 // Get all single sequence puzzles

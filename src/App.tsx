@@ -40,10 +40,12 @@ function App() {
   const loadDailyPuzzle = () => {
     // Load the daily puzzle for the selected date
     const newPuzzle = getDailyPuzzle(puzzleDate);
+    setPuzzle(newPuzzle);
     
     // Load comparative puzzle for the selected date
     const newComparativePuzzle = getDailyComparativePuzzle(puzzleDate);
     setComparativePuzzle(newComparativePuzzle);
+    console.log("Comparative puzzle loaded:", newComparativePuzzle); // Debug log
     
     // Load a random sequence puzzle
     const newSequencePuzzle = getRandomSingleSequencePuzzle();
@@ -66,12 +68,8 @@ function App() {
       }
     }
     
-    if (newPuzzle) {
-      setPuzzle(newPuzzle);
-      
-      // Reset to show mode selection when loading a new puzzle
-      setShowModeSelect(true);
-    }
+    // Reset to show mode selection when loading a new puzzle
+    setShowModeSelect(true);
   };
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,17 +96,18 @@ function App() {
           </p>
         </button>
         
-        {comparativePuzzle && (
-          <button
-            onClick={() => selectGameMode('comparative')}
-            className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
-          >
-            <h3 className="text-xl font-bold mb-2">Higher or Lower</h3>
-            <p className="text-sm opacity-80">
-              Compare pairs of items and choose the one with the higher value. The winner stays for the next round!
-            </p>
-          </button>
-        )}
+        {/* Always show the comparative mode, but disable if there's no puzzle for it */}
+        <button
+          onClick={() => comparativePuzzle && selectGameMode('comparative')}
+          className={`p-4 ${comparativePuzzle ? 'bg-indigo-700 hover:bg-indigo-600' : 'bg-indigo-900 opacity-60 cursor-not-allowed'} rounded-lg`}
+        >
+          <h3 className="text-xl font-bold mb-2">Higher or Lower</h3>
+          <p className="text-sm opacity-80">
+            {comparativePuzzle 
+              ? "Compare pairs of items and choose the one with the higher value. The winner stays for the next round!"
+              : "No Higher or Lower challenge available for this date."}
+          </p>
+        </button>
         
         {sequencePuzzle && (
           <button
@@ -208,6 +207,16 @@ function App() {
             </div>
           )}
         </>
+      )}
+
+      {/* Debug info - only displayed during development */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 p-4 bg-gray-900 rounded-lg text-xs max-w-lg">
+          <h3 className="font-bold mb-2">Debug Info:</h3>
+          <div>Game Mode: {gameMode}</div>
+          <div>Comparative Puzzle: {comparativePuzzle ? 'Available' : 'Not Available'}</div>
+          <div>Sequence Puzzle: {sequencePuzzle ? 'Available' : 'Not Available'}</div>
+        </div>
       )}
     </div>
   );
