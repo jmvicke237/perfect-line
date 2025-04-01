@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getDailyComparativePuzzle, getDailySequencePuzzle, getCurrentSurveyQuestion } from './data/gameDataUtilsNew';
+import { getDailyComparativePuzzle, getDailySequencePuzzle, getCurrentSurveyQuestion } from './data/gameDataUtils';
 import { ComparativePuzzle, SingleSequencePuzzle } from './types/game';
 import ComparativeGame from './components/ComparativeGame';
 import SingleSequenceGame from './components/SingleSequenceGame';

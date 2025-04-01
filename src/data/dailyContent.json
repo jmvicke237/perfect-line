@@ -2,298 +2,242 @@
   "dailyContent": [
     {
       "date": "2025-03-29",
-      "name": "March 29, 2025 Puzzle",
-      "description": "Test your knowledge of space",
+      "name": "March 29, 2025",
+      "description": "Weekend puzzles",
       "comparative": {
-        "id": "planets-mass",
-        "name": "Planet Mass",
-        "description": "Compare the mass of different planets",
-        "attribute": "mass (10^24 kg)",
-        "items": [
-          { "id": "earth", "name": "Earth", "value": 5.97 },
-          { "id": "mars", "name": "Mars", "value": 0.642 },
-          { "id": "jupiter", "name": "Jupiter", "value": 1898 },
-          { "id": "venus", "name": "Venus", "value": 4.87 },
-          { "id": "mercury", "name": "Mercury", "value": 0.33 },
-          { "id": "saturn", "name": "Saturn", "value": 568 },
-          { "id": "neptune", "name": "Neptune", "value": 102 },
-          { "id": "uranus", "name": "Uranus", "value": 86.8 }
-        ]
-      },
-      "sequence": {
-        "id": "89008",
-        "prompt": "Streaming Services",
-        "leftLabel": "Oldest Service",
-        "rightLabel": "Newest Service",
+        "id": "comp-countries-gdp",
+        "name": "Countries by GDP",
+        "description": "Compare countries by their GDP (in trillions USD)",
+        "attribute": "GDP (trillions USD)",
         "items": [
           {
-            "displayValue": "2007",
-            "longText": "Netflix",
-            "shortText": "Netflix"
+            "id": "usa",
+            "name": "United States",
+            "value": 25.46
           },
           {
-            "displayValue": "2008",
-            "longText": "Hulu",
-            "shortText": "Hulu"
+            "id": "china",
+            "name": "China",
+            "value": 18.32
           },
           {
-            "displayValue": "2011",
-            "longText": "Amazon Prime Video",
-            "shortText": "Amazon Prime Video"
+            "id": "japan",
+            "name": "Japan",
+            "value": 4.41
           },
           {
-            "displayValue": "2014",
-            "longText": "Tubi",
-            "shortText": "Tubi"
+            "id": "germany",
+            "name": "Germany",
+            "value": 4.31
           },
           {
-            "displayValue": "2015",
-            "longText": "HBO Now",
-            "shortText": "HBO Now"
+            "id": "uk",
+            "name": "United Kingdom",
+            "value": 3.33
           },
           {
-            "displayValue": "2016",
-            "longText": "SeeSo",
-            "shortText": "SeeSo"
+            "id": "india",
+            "name": "India",
+            "value": 3.73
           },
           {
-            "displayValue": "2017",
-            "longText": "Youtube TV",
-            "shortText": "Youtube TV"
+            "id": "france",
+            "name": "France",
+            "value": 3.05
           },
           {
-            "displayValue": "2019",
-            "longText": "Disney+",
-            "shortText": "Disney+"
-          },
-          {
-            "displayValue": "2020",
-            "longText": "Peacock",
-            "shortText": "Peacock"
+            "id": "italy",
+            "name": "Italy",
+            "value": 2.19
           }
         ]
       },
       "survey": {
-        "id": "s1",
-        "question": "How many movies do you watch per month?",
-        "unit": "movies"
-      }
-    },
-    {
-      "date": "2025-03-30",
-      "name": "March 30, 2025 Puzzle",
-      "description": "Explore heights and depths",
-      "comparative": {
-        "id": "mountains-height",
-        "name": "Mountain Heights",
-        "description": "Compare the heights of famous mountains",
-        "attribute": "height (meters)",
-        "items": [
-          { "id": "everest", "name": "Mount Everest", "value": 8849 },
-          { "id": "k2", "name": "K2", "value": 8611 },
-          { "id": "kilimanjaro", "name": "Kilimanjaro", "value": 5895 },
-          { "id": "denali", "name": "Denali", "value": 6190 },
-          { "id": "fuji", "name": "Mount Fuji", "value": 3776 },
-          { "id": "matterhorn", "name": "Matterhorn", "value": 4478 },
-          { "id": "whitney", "name": "Mount Whitney", "value": 4421 },
-          { "id": "elbrus", "name": "Mount Elbrus", "value": 5642 }
-        ]
-      },
-      "sequence": {
-        "id": "89036",
-        "prompt": "Best Picture Oscar Winners",
-        "leftLabel": "Oldest Winner",
-        "rightLabel": "Newest Winner",
-        "items": [
-          {
-            "displayValue": "2001",
-            "longText": "Gladiator",
-            "shortText": "Gladiator"
-          },
-          {
-            "displayValue": "2003",
-            "longText": "Chicago",
-            "shortText": "Chicago"
-          },
-          {
-            "displayValue": "2007",
-            "longText": "The Departed",
-            "shortText": "The Departed"
-          },
-          {
-            "displayValue": "2009",
-            "longText": "Slumdog Millionaire",
-            "shortText": "Slumdog Millionaire"
-          },
-          {
-            "displayValue": "2012",
-            "longText": "The Artist",
-            "shortText": "The Artist"
-          },
-          {
-            "displayValue": "2015",
-            "longText": "Birdman",
-            "shortText": "Birdman"
-          },
-          {
-            "displayValue": "2017",
-            "longText": "Moonlight",
-            "shortText": "Moonlight"
-          },
-          {
-            "displayValue": "2020",
-            "longText": "Parasite",
-            "shortText": "Parasite"
-          }
-        ]
-      },
-      "survey": {
-        "id": "s2",
-        "question": "How many hours do you spend on social media per week?",
+        "id": "q1",
+        "question": "How many hours of sleep do you get on an average night?",
         "unit": "hours"
       }
     },
     {
-      "date": "2025-03-31",
-      "name": "March 31, 2025 Puzzle",
-      "description": "Test your knowledge of animals",
+      "date": "2025-03-30",
+      "name": "March 30, 2025",
+      "description": "Sunday puzzles",
       "comparative": {
-        "id": "animals-speed",
-        "name": "Animal Speeds",
-        "description": "Which animal is faster?",
-        "attribute": "speed (km/h)",
+        "id": "comp-movies-boxoffice",
+        "name": "Movies by Box Office",
+        "description": "Compare movies by their worldwide box office (in billions USD)",
+        "attribute": "box office (billions USD)",
         "items": [
-          { "id": "cheetah", "name": "Cheetah", "value": 120 },
-          { "id": "falcon", "name": "Peregrine Falcon", "value": 389 },
-          { "id": "sailfish", "name": "Sailfish", "value": 110 },
-          { "id": "tiger", "name": "Tiger", "value": 65 },
-          { "id": "coyote", "name": "Coyote", "value": 69 },
-          { "id": "rabbit", "name": "Rabbit", "value": 70 },
-          { "id": "ostrich", "name": "Ostrich", "value": 70 },
-          { "id": "greyhound", "name": "Greyhound", "value": 74 }
+          {
+            "id": "avatar",
+            "name": "Avatar",
+            "value": 2.92
+          },
+          {
+            "id": "avengers-endgame",
+            "name": "Avengers: Endgame",
+            "value": 2.8
+          },
+          {
+            "id": "titanic",
+            "name": "Titanic",
+            "value": 2.26
+          },
+          {
+            "id": "star-wars-force-awakens",
+            "name": "Star Wars: The Force Awakens",
+            "value": 2.07
+          },
+          {
+            "id": "avengers-infinity-war",
+            "name": "Avengers: Infinity War",
+            "value": 2.05
+          },
+          {
+            "id": "spider-man-no-way-home",
+            "name": "Spider-Man: No Way Home",
+            "value": 1.92
+          },
+          {
+            "id": "jurassic-world",
+            "name": "Jurassic World",
+            "value": 1.67
+          },
+          {
+            "id": "the-lion-king",
+            "name": "The Lion King (2019)",
+            "value": 1.66
+          }
         ]
       },
       "sequence": {
-        "id": "89037",
-        "prompt": "Fashion Trends by Decade",
-        "leftLabel": "Earliest Trend",
-        "rightLabel": "Latest Trend",
+        "id": "seq-mountains-height",
+        "prompt": "Order these mountains by height",
+        "leftLabel": "Shortest",
+        "rightLabel": "Tallest",
         "items": [
           {
-            "displayValue": "1930s",
-            "longText": "Knit Suits",
-            "shortText": "Knit Suits"
+            "shortText": "Mount Everest",
+            "displayValue": "8,849 m"
           },
           {
-            "displayValue": "1940s",
-            "longText": "Bikini",
-            "shortText": "Bikini"
+            "shortText": "K2",
+            "displayValue": "8,611 m"
           },
           {
-            "displayValue": "1950s",
-            "longText": "Greaser Style",
-            "shortText": "Greaser Style"
+            "shortText": "Kangchenjunga",
+            "displayValue": "8,586 m"
           },
           {
-            "displayValue": "1960s",
-            "longText": "Miniskirt",
-            "shortText": "Miniskirt"
+            "shortText": "Lhotse",
+            "displayValue": "8,516 m"
           },
           {
-            "displayValue": "1970s",
-            "longText": "Platform Heels",
-            "shortText": "Platform Heels"
-          },
-          {
-            "displayValue": "1980s",
-            "longText": "Leggings",
-            "shortText": "Leggings"
-          },
-          {
-            "displayValue": "1990s",
-            "longText": "Grunge Plaid",
-            "shortText": "Grunge Plaid"
-          },
-          {
-            "displayValue": "2000s",
-            "longText": "Velour Tracksuits",
-            "shortText": "Velour Tracksuits"
+            "shortText": "Makalu",
+            "displayValue": "8,485 m"
           }
         ]
       },
       "survey": {
-        "id": "s3",
+        "id": "q2",
+        "question": "How many cups of coffee/tea do you drink per day?",
+        "unit": "cups"
+      }
+    },
+    {
+      "date": "2025-03-31",
+      "name": "March 31, 2025",
+      "description": "Monday puzzles",
+      "comparative": {
+        "id": "comp-planets-diameter",
+        "name": "Planets by Diameter",
+        "description": "Compare planets by their diameter (in km)",
+        "attribute": "diameter (km)",
+        "items": [
+          {
+            "id": "jupiter",
+            "name": "Jupiter",
+            "value": 139820
+          },
+          {
+            "id": "saturn",
+            "name": "Saturn",
+            "value": 116460
+          },
+          {
+            "id": "uranus",
+            "name": "Uranus",
+            "value": 50724
+          },
+          {
+            "id": "neptune",
+            "name": "Neptune",
+            "value": 49244
+          },
+          {
+            "id": "earth",
+            "name": "Earth",
+            "value": 12742
+          },
+          {
+            "id": "venus",
+            "name": "Venus",
+            "value": 12104
+          },
+          {
+            "id": "mars",
+            "name": "Mars",
+            "value": 6779
+          },
+          {
+            "id": "mercury",
+            "name": "Mercury",
+            "value": 4879
+          }
+        ]
+      },
+      "survey": {
+        "id": "q3",
         "question": "How many sandwiches do you make per year?",
         "unit": "sandwiches"
       }
     },
     {
       "date": "2025-04-01",
-      "name": "April 1, 2025 Puzzle",
-      "description": "April Fools and Fun Facts",
-      "comparative": {
-        "id": "internet-sites",
-        "name": "Website Traffic",
-        "description": "Which website gets more visitors?",
-        "attribute": "monthly visitors (millions)",
-        "items": [
-          { "id": "google", "name": "Google", "value": 90000 },
-          { "id": "youtube", "name": "YouTube", "value": 34000 },
-          { "id": "facebook", "name": "Facebook", "value": 25000 },
-          { "id": "twitter", "name": "Twitter/X", "value": 7000 },
-          { "id": "instagram", "name": "Instagram", "value": 18000 },
-          { "id": "amazon", "name": "Amazon", "value": 25000 },
-          { "id": "netflix", "name": "Netflix", "value": 5000 },
-          { "id": "reddit", "name": "Reddit", "value": 1700 }
-        ]
-      },
+      "name": "April 1, 2025",
+      "description": "April Fools' Day puzzles",
       "sequence": {
-        "id": "89040",
-        "prompt": "Scorsese Films",
-        "leftLabel": "Oldest Film",
-        "rightLabel": "Newest Film",
+        "id": "seq-animals-speed",
+        "prompt": "Order these animals by top speed",
+        "leftLabel": "Slowest",
+        "rightLabel": "Fastest",
         "items": [
           {
-            "displayValue": "1976",
-            "longText": "Taxi Driver",
-            "shortText": "Taxi Driver"
+            "shortText": "Cheetah",
+            "displayValue": "120 km/h"
           },
           {
-            "displayValue": "1980",
-            "longText": "Raging Bull",
-            "shortText": "Raging Bull"
+            "shortText": "Pronghorn Antelope",
+            "displayValue": "98 km/h"
           },
           {
-            "displayValue": "1990",
-            "longText": "Goodfellas",
-            "shortText": "Goodfellas"
+            "shortText": "Springbok",
+            "displayValue": "88 km/h"
           },
           {
-            "displayValue": "2002",
-            "longText": "Gangs of New York",
-            "shortText": "Gangs of New York"
+            "shortText": "Wildebeest",
+            "displayValue": "80 km/h"
           },
           {
-            "displayValue": "2006",
-            "longText": "The Departed",
-            "shortText": "The Departed"
-          },
-          {
-            "displayValue": "2013",
-            "longText": "The Wolf of Wall Street",
-            "shortText": "The Wolf of Wall Street"
-          },
-          {
-            "displayValue": "2019",
-            "longText": "The Irishman",
-            "shortText": "The Irishman"
+            "shortText": "Lion",
+            "displayValue": "80 km/h"
           }
         ]
       },
       "survey": {
-        "id": "s4",
-        "question": "How many books do you read in a year?",
-        "unit": "books"
+        "id": "q4",
+        "question": "How many hours do you spend on social media per week?",
+        "unit": "hours"
       }
     }
   ]

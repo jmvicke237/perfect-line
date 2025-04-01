@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCurrentSurveyQuestion, getYesterdaySurveyResults, saveSurveyResponse } from '../data/gameDataUtilsNew';
+import { getCurrentSurveyQuestion, getYesterdaySurveyResults, saveSurveyResponse } from '../data/gameDataUtils';
 import { SurveyQuestion, SurveyResponse, SurveyResult } from '../types/game';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
