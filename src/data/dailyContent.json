@@ -3,7 +3,6 @@
     {
       "date": "2025-03-29",
       "name": "March 29, 2025",
-      "description": "Weekend puzzles",
       "comparative": {
         "id": "comp-countries-gdp",
         "name": "Countries by GDP",
@@ -61,7 +60,6 @@
     {
       "date": "2025-03-30",
       "name": "March 30, 2025",
-      "description": "Sunday puzzles",
       "comparative": {
         "id": "comp-movies-boxoffice",
         "name": "Movies by Box Office",
@@ -147,7 +145,6 @@
     {
       "date": "2025-03-31",
       "name": "March 31, 2025",
-      "description": "Monday puzzles",
       "comparative": {
         "id": "comp-planets-diameter",
         "name": "Planets by Diameter",
@@ -205,7 +202,6 @@
     {
       "date": "2025-04-01",
       "name": "April 1, 2025",
-      "description": "April Fools' Day puzzles",
       "sequence": {
         "id": "seq-animals-speed",
         "prompt": "Order these animals by top speed",

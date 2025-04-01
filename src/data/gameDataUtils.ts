@@ -20,7 +20,6 @@ import { saveSurveyResponseToFirebase, getSurveyResponsesFromFirebase } from '..
 interface DailyContent {
   date: string;
   name: string;
-  description: string;
   comparative?: ComparativePuzzleDefinition;
   sequence?: SingleSequencePuzzleDefinition;
   survey?: SurveyQuestionDefinition;

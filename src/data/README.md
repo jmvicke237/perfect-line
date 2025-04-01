@@ -10,6 +10,13 @@ and may include different types of puzzles:
 
 Each date can have any combination of these puzzle types.
 
+## Structure of dailyContent.json
+
+Each entry in the `dailyContent` array has:
+- `date`: The date in YYYY-MM-DD format
+- `name`: A display name for the date
+- Optional puzzle types: `comparative`, `sequence`, `survey`
+
 ## How the Survey System Works
 
 The survey system operates in a two-day cycle:
