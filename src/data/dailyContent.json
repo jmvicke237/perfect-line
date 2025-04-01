@@ -1,8 +1,93 @@
 {
   "dailyContent": [
     {
-      "date": "2025-03-29",
-      "name": "March 29, 2025",
+      "date": "2025-04-01",
+      "name": "April 1, 2025",
+      "comparative": {
+        "id": "comp-countries-gdp",
+        "name": "Countries by GDP",
+        "description": "Compare countries by their GDP (in trillions USD)",
+        "attribute": "GDP (trillions USD)",
+        "items": [
+          {
+            "id": "usa",
+            "name": "United States",
+            "value": 25.46
+          },
+          {
+            "id": "china",
+            "name": "China",
+            "value": 18.32
+          },
+          {
+            "id": "japan",
+            "name": "Japan",
+            "value": 4.41
+          },
+          {
+            "id": "germany",
+            "name": "Germany",
+            "value": 4.31
+          },
+          {
+            "id": "uk",
+            "name": "United Kingdom",
+            "value": 3.33
+          },
+          {
+            "id": "india",
+            "name": "India",
+            "value": 3.73
+          },
+          {
+            "id": "france",
+            "name": "France",
+            "value": 3.05
+          },
+          {
+            "id": "italy",
+            "name": "Italy",
+            "value": 2.19
+          }
+        ]
+      },
+      "sequence": {
+        "id": "seq-animals-speed",
+        "prompt": "Order these animals by top speed",
+        "leftLabel": "Slowest",
+        "rightLabel": "Fastest",
+        "items": [
+          {
+            "shortText": "Cheetah",
+            "displayValue": "120 km/h"
+          },
+          {
+            "shortText": "Pronghorn Antelope",
+            "displayValue": "98 km/h"
+          },
+          {
+            "shortText": "Springbok",
+            "displayValue": "88 km/h"
+          },
+          {
+            "shortText": "Wildebeest",
+            "displayValue": "80 km/h"
+          },
+          {
+            "shortText": "Lion",
+            "displayValue": "80 km/h"
+          }
+        ]
+      },
+      "survey": {
+        "id": "q4",
+        "question": "How many hours do you spend on social media per week?",
+        "unit": "hours"
+      }
+    },
+    {
+      "date": "2025-04-02",
+      "name": "April 2, 2025",
       "comparative": {
         "id": "comp-countries-gdp",
         "name": "Countries by GDP",
@@ -58,8 +143,8 @@
       }
     },
     {
-      "date": "2025-03-30",
-      "name": "March 30, 2025",
+      "date": "2025-04-03",
+      "name": "April 3, 2025",
       "comparative": {
         "id": "comp-movies-boxoffice",
         "name": "Movies by Box Office",
@@ -143,8 +228,8 @@
       }
     },
     {
-      "date": "2025-03-31",
-      "name": "March 31, 2025",
+      "date": "2025-04-04",
+      "name": "April 4, 2025",
       "comparative": {
         "id": "comp-planets-diameter",
         "name": "Planets by Diameter",
@@ -197,43 +282,6 @@
         "id": "q3",
         "question": "How many sandwiches do you make per year?",
         "unit": "sandwiches"
-      }
-    },
-    {
-      "date": "2025-04-01",
-      "name": "April 1, 2025",
-      "sequence": {
-        "id": "seq-animals-speed",
-        "prompt": "Order these animals by top speed",
-        "leftLabel": "Slowest",
-        "rightLabel": "Fastest",
-        "items": [
-          {
-            "shortText": "Cheetah",
-            "displayValue": "120 km/h"
-          },
-          {
-            "shortText": "Pronghorn Antelope",
-            "displayValue": "98 km/h"
-          },
-          {
-            "shortText": "Springbok",
-            "displayValue": "88 km/h"
-          },
-          {
-            "shortText": "Wildebeest",
-            "displayValue": "80 km/h"
-          },
-          {
-            "shortText": "Lion",
-            "displayValue": "80 km/h"
-          }
-        ]
-      },
-      "survey": {
-        "id": "q4",
-        "question": "How many hours do you spend on social media per week?",
-        "unit": "hours"
       }
     }
   ]

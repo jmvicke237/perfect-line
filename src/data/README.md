@@ -17,6 +17,25 @@ Each entry in the `dailyContent` array has:
 - `name`: A display name for the date
 - Optional puzzle types: `comparative`, `sequence`, `survey`
 
+## ID Formatting Rules & Recommendations
+
+Several parts of the JSON structure require unique IDs. While there are few strict technical rules beyond being unique strings, follow these recommendations:
+
+1.  **Top-Level Puzzle IDs (`comparative.id`, `sequence.id`):**
+    *   **Uniqueness:** Must be unique across the *entire* `dailyContent.json` file.
+    *   **Formatting:** Use descriptive `kebab-case` (e.g., `comp-countries-gdp`) or `snake_case`. Avoid spaces and special characters.
+
+2.  **Comparative Item IDs (`comparative.items[].id`):**
+    *   **Uniqueness:** Must be unique *within the items list of that specific comparative puzzle*.
+    *   **Formatting:** Use descriptive `kebab-case` (e.g., `spider-man-no-way-home`) or `snake_case`. Avoid spaces and special characters.
+
+3.  **Sequence Item IDs:**
+    *   These are **auto-generated** by the code (`item-0`, `item-1`, etc.). **Do not** add manual IDs for sequence items in the JSON.
+
+4.  **Survey IDs (`survey.id`):**
+    *   **Uniqueness:** Must be unique across the *entire* `dailyContent.json` file, as these are used as part of the key for storing results in Firebase/localStorage.
+    *   **Formatting:** Simple IDs like `q1`, `q2` are fine. Keep them short and unique.
+
 ## How the Survey System Works
 
 The survey system operates in a two-day cycle:
