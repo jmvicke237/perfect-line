@@ -12,8 +12,6 @@ type GameMode = 'grid' | 'comparative' | 'sequence' | 'survey';
 function App() {
   // State for puzzle date and game mode
   const [puzzleDate, setPuzzleDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [puzzleTitle, setPuzzleTitle] = useState<string>('Today\'s Puzzle');
-  const [puzzleDescription, setPuzzleDescription] = useState<string>('');
   const [gameMode, setGameMode] = useState<GameMode>('grid');
   const [showModeSelect, setShowModeSelect] = useState<boolean>(true);
   
@@ -45,28 +43,10 @@ function App() {
     // Load comparative puzzle for the selected date
     const newComparativePuzzle = getDailyComparativePuzzle(puzzleDate);
     setComparativePuzzle(newComparativePuzzle);
-    console.log("Comparative puzzle loaded:", newComparativePuzzle); // Debug log
     
     // Load a random sequence puzzle
     const newSequencePuzzle = getRandomSingleSequencePuzzle();
     setSequencePuzzle(newSequencePuzzle);
-    
-    // Update title and description
-    const dailyPuzzleInfo = getDailyPuzzleForDate(puzzleDate);
-    if (dailyPuzzleInfo) {
-      setPuzzleTitle(dailyPuzzleInfo.name);
-      setPuzzleDescription(dailyPuzzleInfo.description);
-    } else {
-      // For random puzzles, get the actual puzzle definition to show its description
-      const puzzleDefinition = getPuzzleById(newPuzzle?.id || '');
-      if (puzzleDefinition) {
-        setPuzzleTitle(puzzleDefinition.name || 'Random Daily Puzzle');
-        setPuzzleDescription(puzzleDefinition.description || 'Try to arrange these items in the correct order');
-      } else {
-        setPuzzleTitle('Daily Puzzle');
-        setPuzzleDescription('A randomly selected puzzle for today');
-      }
-    }
     
     // Reset to show mode selection when loading a new puzzle
     setShowModeSelect(true);
@@ -127,7 +107,7 @@ function App() {
         >
           <h3 className="text-xl font-bold mb-2">Daily Survey</h3>
           <p className="text-sm opacity-80">
-            Answer today's numerical question and see how others answered yesterday's question
+            Answer today's numerical question and order yesterday's results!
           </p>
         </button>
       </div>
@@ -146,7 +126,7 @@ function App() {
         >
           Perfect Line
         </h1>
-        <div className="mb-2 md:mb-4 flex flex-wrap justify-center gap-2">
+        <div className="mb-4 flex flex-wrap justify-center gap-2">
           <input 
             type="date" 
             value={puzzleDate} 
@@ -169,10 +149,6 @@ function App() {
               Change Mode
             </button>
           )}
-        </div>
-        <div className="text-center mb-2 md:mb-4">
-          <h2 className="text-lg md:text-xl font-semibold">{puzzleTitle}</h2>
-          <p className="text-xs md:text-sm opacity-80">{puzzleDescription}</p>
         </div>
       </header>
 
