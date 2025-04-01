@@ -9,10 +9,13 @@ import SurveyGame from './components/SurveyGame';
 // Define game modes
 type GameMode = 'grid' | 'comparative' | 'sequence' | 'survey';
 
+// This flag controls whether grid mode is available to users
+const GRID_MODE_ENABLED = false;
+
 function App() {
   // State for puzzle date and game mode
   const [puzzleDate, setPuzzleDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [gameMode, setGameMode] = useState<GameMode>('grid');
+  const [gameMode, setGameMode] = useState<GameMode>('survey'); // Default to survey mode since grid is disabled
   const [showModeSelect, setShowModeSelect] = useState<boolean>(true);
   
   // Initialize puzzle state
@@ -66,15 +69,18 @@ function App() {
     <div className="w-full max-w-lg mx-auto bg-indigo-900 p-6 rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Select Game Mode</h2>
       <div className="flex flex-col gap-4">
-        <button
-          onClick={() => selectGameMode('grid')}
-          className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
-        >
-          <h3 className="text-xl font-bold mb-2">Grid Mode</h3>
-          <p className="text-sm opacity-80">
-            Arrange items in the correct order within each row
-          </p>
-        </button>
+        {/* Grid Mode - Only shown if enabled */}
+        {GRID_MODE_ENABLED && (
+          <button
+            onClick={() => selectGameMode('grid')}
+            className="p-4 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
+          >
+            <h3 className="text-xl font-bold mb-2">Grid Mode</h3>
+            <p className="text-sm opacity-80">
+              Arrange items in the correct order within each row
+            </p>
+          </button>
+        )}
         
         {/* Always show the comparative mode, but disable if there's no puzzle for it */}
         <button
