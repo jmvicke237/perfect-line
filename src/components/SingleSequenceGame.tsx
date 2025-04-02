@@ -41,8 +41,8 @@ const SortableItem = ({ id, text, displayValue, isCorrect, isWrong, isSubmitted 
     flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
-    border: '1px solid rgba(255, 255, 255, 0.2)', // Added subtle border
-    boxShadow: '0 1px 3px rgba(0,0,0,0.1)', // Added subtle shadow
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
   };
 
   return (

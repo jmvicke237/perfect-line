@@ -137,7 +137,7 @@
         ]
       },
       "survey": {
-        "id": "q1",
+        "id": "q2",
         "question": "How many hours of sleep do you get on an average night?",
         "unit": "hours"
       }
@@ -222,7 +222,7 @@
         ]
       },
       "survey": {
-        "id": "q2",
+        "id": "q3",
         "question": "How many cups of coffee/tea do you drink per day?",
         "unit": "cups"
       }
