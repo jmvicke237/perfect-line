@@ -291,34 +291,21 @@ export const getRandomSequencePuzzle = (): SingleSequencePuzzle | null => {
 
 /**
  * Get today's survey question
- * @returns SurveyQuestion or null if none exists
+ * @returns SurveyQuestion or null if none exists for today
  */
 export const getCurrentSurveyQuestion = (): SurveyQuestion | null => {
   const todayContent = getTodaysDailyContent();
   
+  // If no content is defined for today, or if it lacks a survey section, return null.
   if (!todayContent || !todayContent.survey) {
-    // Fallback to a random survey question
-    const allContent = getAllDailyContent();
-    const surveyContent = allContent.filter(content => content.survey);
-    
-    if (surveyContent.length === 0) return null;
-    
-    const randomIndex = Math.floor(Math.random() * surveyContent.length);
-    const randomContent = surveyContent[randomIndex];
-    
-    if (!randomContent.survey) return null;
-    
-    return {
-      id: randomContent.survey.id,
-      date: getTodayDate(),
-      question: randomContent.survey.question,
-      unit: randomContent.survey.unit
-    };
+    console.warn(`No survey question found for today (${getTodayDate()}) in dailyContent.json`);
+    return null; // Do not fallback to a random question
   }
   
+  // If today's content has a survey, return its details.
   return {
     id: todayContent.survey.id,
-    date: todayContent.date,
+    date: todayContent.date, // Use the date from the content entry
     question: todayContent.survey.question,
     unit: todayContent.survey.unit
   };
