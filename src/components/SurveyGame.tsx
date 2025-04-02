@@ -94,13 +94,18 @@ const SurveyGame: React.FC = () => {
         
         // Load yesterday's results (async)
         const results = await getYesterdaySurveyResults();
+        console.log("Fetched yesterday's results:", results);
         setYesterdayResults(results);
         
         // Initialize the user's ordered responses with a shuffled copy of the results
         if (results && results.responses.length > 0) {
+          console.log(`Found ${results.responses.length} responses. Shuffling...`);
           // Shuffle the responses for the game
           const shuffled = [...results.responses].sort(() => Math.random() - 0.5);
+          console.log("Shuffled responses for game state:", shuffled);
           setUserOrderedResponses(shuffled);
+        } else {
+          console.log("No responses found for yesterday or results structure invalid.");
         }
         
         // Check if the user has already submitted a response today
@@ -208,8 +213,12 @@ const SurveyGame: React.FC = () => {
     
     const [correct, total] = score;
     const emojiGrid = userOrderedResponses.map((_, index) => {
-      const isCorrect = index === score[0] - 1;
-      return isCorrect ? '🟩' : '🟥';
+      const correctOrder = [...yesterdayResults.responses].sort((a, b) => a.answer - b.answer);
+      const currentItemTimestamp = userOrderedResponses[index].timestamp;
+      const correctIndex = correctOrder.findIndex(r => r.timestamp === currentItemTimestamp);
+      const isCorrectPosition = index === correctIndex;
+      
+      return isCorrectPosition ? '🟩' : '🟥';
     }).join('');
 
     return `Perfect Line: Survey Mode ${correct}/${total}\n\n${emojiGrid}\n\nPlay at: https://justinvickers.github.io/perfect-line/`;
@@ -321,12 +330,14 @@ const SurveyGame: React.FC = () => {
                         .sort((a, b) => a.answer - b.answer)
                         .findIndex(r => r.timestamp === response.timestamp);
                         
+                    const displayAnswer = resultsSubmitted ? response.answer : 0;
+                        
                     return (
                       <SortableResponseItem
                         key={`response-${response.timestamp}`}
                         id={`response-${response.timestamp}`}
                         name={response.name}
-                        answer={resultsSubmitted ? response.answer : 0}
+                        answer={displayAnswer}
                         unit={yesterdayResults.question.unit}
                         isCorrect={isCorrect}
                         isWrong={resultsSubmitted && !isCorrect}
@@ -498,17 +509,12 @@ const SurveyGame: React.FC = () => {
                 }}
                 disabled={isSaving}
               >
-                {isSaving ? 'Submitting...' : 'Submit Answer'}
+                {isSaving ? 'Saving...' : 'Submit Answer'}
               </button>
             </form>
           ) : (
             <div style={{ textAlign: 'center', padding: '1rem' }}>
-              <p style={{ fontSize: '1.125rem', fontWeight: '500', marginBottom: '0.5rem' }}>
-                Thanks for your response!
-              </p>
-              <p style={{ fontSize: '0.875rem', opacity: 0.9 }}>
-                Come back tomorrow to see how your answer compares to others.
-              </p>
+              <p>Thanks for submitting your answer for today!</p>
             </div>
           )}
         </div>

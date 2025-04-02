@@ -257,17 +257,18 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
         </h2>
       </div>
       
-      {/* Container for the sequence items and labels */}
+      {/* Top Label */}
+      <div style={{ textAlign: 'center', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: '500', opacity: 0.8 }}>
+        {gameState.currentPuzzle.leftLabel}
+      </div>
+
+      {/* Container for the sequence items */}
       <div style={{ 
-        backgroundColor: '#312e81', // Slightly lighter indigo for contrast
+        backgroundColor: '#312e81', 
         padding: '1rem',
         borderRadius: '0.5rem',
-        marginBottom: '1rem' 
+        marginBottom: '0.5rem'
       }}>
-        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: '500', opacity: 0.8 }}>
-          {gameState.currentPuzzle.leftLabel}
-        </div>
-        
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={gameState.userOrder}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem' }}>
@@ -290,12 +291,14 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
             </div>
           </SortableContext>
         </DndContext>
-        
-        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginTop: '1rem', fontWeight: '500', opacity: 0.8 }}>
-          {gameState.currentPuzzle.rightLabel}
-        </div>
       </div>
 
+      {/* Bottom Label - Now outside the lighter background container */}
+      <div style={{ textAlign: 'center', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: '500', opacity: 0.8 }}>
+        {gameState.currentPuzzle.rightLabel}
+      </div>
+
+      {/* Submit/Results Area */}
       <div>
         {gameState.isSubmitted ? (
           <div style={{ 
