@@ -32,6 +32,7 @@ export const saveSurveyResponseToFirebase = async (response: SurveyResponse): Pr
 
 // Get survey responses for a specific date and question
 export const getSurveyResponsesFromFirebase = async (date: string, questionId: string): Promise<SurveyResponse[]> => {
+  console.log(`Querying Firestore for surveyResponses with date: ${date}, questionId: ${questionId}`); // LOG: Query details
   try {
     const q = query(
       collection(db, 'surveyResponses'), 
@@ -40,12 +41,21 @@ export const getSurveyResponsesFromFirebase = async (date: string, questionId: s
     );
     
     const querySnapshot = await getDocs(q);
+    console.log(`Firestore query returned ${querySnapshot.size} documents.`); // LOG: Count returned by Firestore
     const responses: SurveyResponse[] = [];
     
     querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-      responses.push(doc.data() as SurveyResponse);
+      console.log(`Processing document ID: ${doc.id}`, doc.data()); // LOG: Each document processed
+      // Basic check for expected structure before pushing
+      const data = doc.data();
+      if (data && typeof data.name === 'string' && typeof data.answer === 'number') {
+        responses.push(data as SurveyResponse);
+      } else {
+        console.warn(`Skipping document ID: ${doc.id} due to unexpected data structure or missing fields.`, data);
+      }
     });
     
+    console.log(`Returning ${responses.length} processed responses.`); // LOG: Count after processing
     return responses;
   } catch (error) {
     console.error("Error getting responses from Firestore: ", error);
