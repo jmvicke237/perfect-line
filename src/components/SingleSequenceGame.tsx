@@ -42,6 +42,8 @@ const SortableItem = ({ id, text, displayValue, isCorrect, isWrong, isSubmitted 
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
+    border: '1px solid rgba(255, 255, 255, 0.2)', // Added subtle border
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)', // Added subtle shadow
   };
 
   return (
@@ -255,8 +257,14 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
         </h2>
       </div>
       
-      <div style={{ marginBottom: '1rem' }}>
-        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: '500' }}>
+      {/* Container for the sequence items and labels */}
+      <div style={{ 
+        backgroundColor: '#312e81', // Slightly lighter indigo for contrast
+        padding: '1rem',
+        borderRadius: '0.5rem',
+        marginBottom: '1rem' 
+      }}>
+        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginBottom: '1rem', fontWeight: '500', opacity: 0.8 }}>
           {gameState.currentPuzzle.leftLabel}
         </div>
         
@@ -283,7 +291,7 @@ const SingleSequenceGame = ({ puzzle }: SingleSequenceGameProps) => {
           </SortableContext>
         </DndContext>
         
-        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginTop: '0.5rem', fontWeight: '500' }}>
+        <div style={{ textAlign: 'center', fontSize: '0.875rem', marginTop: '1rem', fontWeight: '500', opacity: 0.8 }}>
           {gameState.currentPuzzle.rightLabel}
         </div>
       </div>
